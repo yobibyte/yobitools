@@ -68,6 +68,7 @@ vim.defer_fn(function()
         goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},} end, 0)
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc }) end
+  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -76,7 +77,7 @@ local on_attach = function(_, bufnr)
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')end
 require('mason').setup() require('mason-lspconfig').setup()
-local servers = { texlab = {}, pyright = {}, html = {}, rust_analyzer = {}, lua_ls = {Lua = {workspace = { checkThirdParty = false }, telemetry = { enable = false },},},}
+local servers = { texlab = {}, pyright = {}, ruff_lsp = {}, html = {}, rust_analyzer = {}, lua_ls = {Lua = {workspace = { checkThirdParty = false }, telemetry = { enable = false },},},}
 local capabilities = vim.lsp.protocol.make_client_capabilities() capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
