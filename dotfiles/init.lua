@@ -13,6 +13,7 @@ vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
+vim.wo.relativenumber = true
 vim.o.autoread = true -- update buffers if files were changed outside
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -27,7 +28,6 @@ require('lazy').setup({
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
   {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
   {'lewis6991/gitsigns.nvim', opts = {signs = {add = { text = '+' }, change = { text = '~' }, changedelete = { text = '~' },},},},
-  {'EdenEast/nightfox.nvim', priority = 1000, config = function() vim.cmd.colorscheme 'nordfox' end,},
   {'numToStr/Comment.nvim', opts = {} },
   {'nvim-telescope/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim',
     {'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
@@ -51,6 +51,8 @@ vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
+vim.keymap.set('n', '<leader>nr', ':set number relativenumber<cr>', {})
+vim.keymap.set('n', '<leader>na', ':set number norelativenumber<cr>', {})
 vim.api.nvim_set_keymap("n", "<Leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
@@ -89,3 +91,4 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {command = "if mode() != 'c' | checktime | endif", pattern = { "*" },})
+vim.cmd 'colorscheme retrobox'
