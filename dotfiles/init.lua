@@ -43,8 +43,7 @@ pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').loa
 
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set('n', '<leader>/', function() require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown 
-  {winblend = 10, previewer = false,}) end, {})
+vim.keymap.set('n', '<leader>/', require('telescope.builtin').current_buffer_fuzzy_find, {})
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, {})
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, {})
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, {})
