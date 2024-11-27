@@ -81,6 +81,7 @@ local on_attach = function(_, bufnr)
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 end
 
 require('mason').setup() require('mason-lspconfig').setup()
