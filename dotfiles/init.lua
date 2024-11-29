@@ -26,7 +26,6 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-sleuth',
   'mbbill/undotree',
-  "rebelot/kanagawa.nvim",
   {'stevearc/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
   {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
@@ -102,4 +101,4 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
 
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {command = "if mode() != 'c' | checktime | endif", pattern = { "*" },})
-vim.cmd 'colorscheme kanagawa-lotus'
+vim.cmd 'colorscheme retrobox'
