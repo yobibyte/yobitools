@@ -2,9 +2,9 @@
 
 threshold=10 # threshold percentage to trigger suspend
 
-# Use `awk` to capture `acpi`'s percent capacity ($2) and status ($3) fields
-# and read their values into the `status` and `capacity` variables
-acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
+# There's grep because mouse battery can also be there.
+# Mouse battery does not have 'remaining/until' info and I exploit it.
+acpi -b | grep 'remaining\|until' | awk -F'[,:%]' '{print $2, $3}' | {
   read -r status capacity   
   echo $status $capacity
 
