@@ -1,0 +1,6 @@
+[Unit]
+Description=Load new newsboat entries.
+
+[Service]
+ExecStart=/home/yobibyte/scripts/reload_newsboat.sh
+

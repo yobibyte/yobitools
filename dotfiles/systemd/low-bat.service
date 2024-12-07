@@ -1,0 +1,6 @@
+[Unit]
+Description=Suspend laptop at low battery.
+
+[Service]
+ExecStart=/home/yobibyte/scripts/bat.sh
+

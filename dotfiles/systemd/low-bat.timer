@@ -1,0 +1,10 @@
+[Unit]
+Description=Suspend laptop at low battery.
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target
+
