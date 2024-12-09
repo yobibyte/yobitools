@@ -81,6 +81,7 @@ local on_attach = function(_, bufnr)
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  nmap('<leader>vg', ':vertical Git<CR>', 'Fugitive vertical staging.')
 end
 
 require('mason').setup() require('mason-lspconfig').setup()
