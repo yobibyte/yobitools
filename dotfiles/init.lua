@@ -55,6 +55,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>nr', ':set number relativenumber<cr>', {})
 vim.keymap.set('n', '<leader>na', ':set number norelativenumber<cr>', {})
+vim.keymap.set('n', '<leader>gj', ':vertical Git<CR>', {})
 vim.api.nvim_set_keymap("n", "<Leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 
 vim.defer_fn(function()
@@ -81,7 +82,6 @@ local on_attach = function(_, bufnr)
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-  nmap('<leader>vg', ':vertical Git<CR>', 'Fugitive vertical staging.')
 end
 
 require('mason').setup() require('mason-lspconfig').setup()
