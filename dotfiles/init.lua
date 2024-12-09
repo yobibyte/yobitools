@@ -55,7 +55,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>nr', ':set number relativenumber<cr>', {})
 vim.keymap.set('n', '<leader>na', ':set number norelativenumber<cr>', {})
-vim.keymap.set('n', '<leader>gj', ':vertical Git<CR>', {})
+vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.api.nvim_set_keymap("n", "<Leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 
 vim.defer_fn(function()
