@@ -56,6 +56,8 @@ vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>nr', ':set number relativenumber<cr>', {})
 vim.keymap.set('n', '<leader>na', ':set number norelativenumber<cr>', {})
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
+vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
+vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
 vim.api.nvim_set_keymap("n", "<Leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 
 vim.defer_fn(function()
