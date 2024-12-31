@@ -105,3 +105,10 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
 
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {command = "if mode() != 'c' | checktime | endif", pattern = { "*" },})
 vim.cmd 'colorscheme retrobox'
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 1
+vim.opt.foldnestmax = 4
+-- vim folding shortcuts
+-- https://gist.github.com/lestoni/8c74da455cce3d36eb68
