@@ -26,6 +26,11 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-sleuth',
   'mbbill/undotree',
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^5', -- Recommended
+    lazy = false, -- This plugin is already lazy
+  },
   {'stevearc/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
   {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
@@ -87,7 +92,7 @@ local on_attach = function(_, bufnr)
 end
 
 require('mason').setup() require('mason-lspconfig').setup()
-local servers = {texlab = {}, pyright = {}, ruff = {}, html = {}, rust_analyzer = {},}
+local servers = {texlab = {}, pyright = {}, ruff = {}, html = {},}
 local capabilities = vim.lsp.protocol.make_client_capabilities() capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
@@ -112,3 +117,15 @@ vim.opt.foldlevelstart = 4
 vim.opt.foldnestmax = 4
 -- vim folding shortcuts
 -- https://gist.github.com/lestoni/8c74da455cce3d36eb68
+
+-- override shortcuts for rust files
+local bufnr = vim.api.nvim_get_current_buf()
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "rust",
+  callback = function()
+    vim.keymap.set("n", "<leader>ca",function() vim.cmd.RustLsp('codeAction') end,  { silent = true, buffer = bufnr })
+    vim.keymap.set("n", "K", function() vim.cmd.RustLsp({'hover', 'actions'}) end, { silent = true, buffer = bufnr })
+    vim.keymap.set('n', '<leader>b', ':Cargo build<CR>', {})
+  end,
+})
+
