@@ -59,6 +59,7 @@ vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
 vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
 vim.keymap.set("n", "<leader>b", ":Cargo build<CR>", {})
+vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 
 vim.defer_fn(function()
