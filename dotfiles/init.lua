@@ -49,8 +49,7 @@ require('lazy').setup({
   'tpope/vim-sleuth', 
   'mbbill/undotree', 
   'numToStr/Comment.nvim',
-  {'mrcjkb/rustaceanvim',version = '^5',lazy = false,},
-  {"rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}, config = function() require("dapui").setup()end,},
+  {'mrcjkb/rustaceanvim',version = '^5',lazy = false, ft="rust"},
   {'mfussenegger/nvim-dap', 
     config = function()
       local dap, dapui = require("dap"), require("dapui")
@@ -60,6 +59,7 @@ require('lazy').setup({
       dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
     end
   },
+  {"rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}, config = function() require("dapui").setup() end,},
   {'stevearc/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
   {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
@@ -113,13 +113,12 @@ local mason_registry = require('mason-registry')
 local codelldb = mason_registry.get_package('codelldb')
 local extension_path = codelldb:get_install_path() .. "/extension/"
 local codelldb_path = extension_path .. "adapter/codelldb"
-local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
-local cfg = require('rustaceanvim.config')
+local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
 vim.g.rustaceanvim = {
   tools = {},
   server = {on_attach = on_attach,},
   default_settings = {['rust-analyzer'] = {},},
-  dap = {adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path)},
+  dap = {adapter = require('rustaceanvim.config').get_codelldb_adapter(codelldb_path, liblldb_path)},
 }
 
 -- Setup completion
