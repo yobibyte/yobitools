@@ -1,7 +1,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.o.hlsearch = false
-vim.wo.number = true
 vim.o.mouse = 'i'
 vim.o.clipboard = 'unnamedplus'
 vim.o.breakindent = true
