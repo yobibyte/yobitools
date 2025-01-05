@@ -13,7 +13,7 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.wo.relativenumber = true
-vim.o.autoread = true -- update buffers if files were changed outside
+vim.o.autoread = true
 
 -- Setup folding.
 vim.o.foldmethod = "expr"
@@ -129,9 +129,6 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
     ['<C-n>'] = cmp.mapping.select_next_item(), ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
-
--- Reload buffers automatically.
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {command = "if mode() != 'c' | checktime | endif", pattern = { "*" },})
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
