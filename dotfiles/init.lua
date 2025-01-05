@@ -14,7 +14,6 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.wo.relativenumber = true
 vim.o.autoread = true -- update buffers if files were changed outside
-vim.cmd 'colorscheme retrobox'
 
 -- Setup folding.
 vim.o.foldmethod = "expr"
@@ -48,6 +47,7 @@ require('lazy').setup({
   'tpope/vim-sleuth', 
   'mbbill/undotree', 
   'numToStr/Comment.nvim',
+  'yobibyte/helix-nvim',
   {'mrcjkb/rustaceanvim',version = '^5',lazy = false, ft="rust"},
   {'mfussenegger/nvim-dap', 
     config = function()
@@ -169,6 +169,9 @@ vim.keymap.set("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc
 
 -- rustaceanvim
 vim.keymap.set("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
+
+-- vim.cmd 'colorscheme retrobox'
+vim.cmd 'colorscheme helix'
 
 -- TODO: automate codelldb install
 -- Right now we use :MasonInstall codelldb
