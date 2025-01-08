@@ -1,4 +1,5 @@
 vim.g.mapleader = ' '
+vim.wo.number = true
 vim.g.maplocalleader = ' '
 vim.o.hlsearch = false
 vim.o.mouse = 'i'
