@@ -173,6 +173,8 @@ vim.cmd 'colorscheme helix'
 
 -- Turn off annoying zls window with diagnostics.
 vim.g.zig_fmt_parse_errors = 0
+-- Fmt on save for Rust.
+vim.g.rustfmt_autosave = 1
 
 -- TODO: automate codelldb install
 -- Right now we use :MasonInstall codelldb
