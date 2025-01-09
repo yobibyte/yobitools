@@ -76,7 +76,7 @@ pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').loa
 -- Setup treesitter.
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
-    ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash' }, ignore_install = {'javascript', 'vim'},
+    ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
     auto_install = false, sync_install = false, modules = {}, highlight = { enable = true }, indent = { enable = true },
     incremental_selection = { enable = true,
       keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', scope_incremental = '<c-s>', node_decremental = '<M-space>',},},
@@ -101,7 +101,7 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 end
 require('mason').setup() require('mason-lspconfig').setup()
-local servers = {texlab = {}, pyright = {}, ruff = {}, html = {},}
+local servers = {texlab = {}, pyright = {}, ruff = {}, html = {}, zls = {}}
 local capabilities = vim.lsp.protocol.make_client_capabilities() capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
@@ -170,6 +170,9 @@ vim.keymap.set("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", {
 
 -- vim.cmd 'colorscheme retrobox'
 vim.cmd 'colorscheme helix'
+
+-- Turn off annoying zls window with diagnostics.
+vim.g.zig_fmt_parse_errors = 0
 
 -- TODO: automate codelldb install
 -- Right now we use :MasonInstall codelldb
