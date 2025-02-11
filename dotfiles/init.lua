@@ -43,8 +43,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- I created forks of all the plugins I use to pin the versions and update when I want.
 require('lazy').setup({
-  'tpope/vim-fugitive',
+  'yobibyte/vim-fugitive',
   'tpope/vim-sleuth', 
   'mbbill/undotree', 
   'numToStr/Comment.nvim',
@@ -60,7 +61,7 @@ require('lazy').setup({
     end
   },
   {"rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}, config = function() require("dapui").setup() end,},
-  {'stevearc/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
+  {'yobibyte/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
   {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
   {'lewis6991/gitsigns.nvim', opts = {signs = {add = { text = '+' }, change = { text = '~' }, changedelete = { text = '~' },},},},
