@@ -46,8 +46,8 @@ vim.opt.rtp:prepend(lazypath)
 -- I created forks of all the plugins I use to pin the versions and update when I want.
 require('lazy').setup({
   'yobibyte/vim-fugitive',
-  'tpope/vim-sleuth', 
-  'mbbill/undotree', 
+  'yobibyte/vim-sleuth', 
+  'yobibyte/undotree', 
   'numToStr/Comment.nvim',
   'yobibyte/helix-nvim',
   {'mrcjkb/rustaceanvim',version = '^5',lazy = false, ft="rust"},
