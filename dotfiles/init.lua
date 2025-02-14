@@ -48,7 +48,7 @@ require('lazy').setup({
   'yobibyte/vim-fugitive',
   'yobibyte/vim-sleuth', 
   'yobibyte/undotree', 
-  'numToStr/Comment.nvim',
+  'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
   {'mrcjkb/rustaceanvim',version = '^5',lazy = false, ft="rust"},
   {'mfussenegger/nvim-dap', 
