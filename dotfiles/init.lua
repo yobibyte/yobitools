@@ -93,7 +93,7 @@ vim.defer_fn(function()
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc }) end
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  nmap('<C-h>', vim.lsp.buf.signature_help, 'Signature Documentation')
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
   nmap('gvd', function() vim.cmd('vsplit') vim.cmd('wincmd l') require('telescope.builtin').lsp_definitions() end, '[G]oto [D]efinition')
@@ -157,6 +157,8 @@ vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
 vim.keymap.set("n", "<leader>b", ":Cargo build<CR>", {})
 vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
+vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 
 -- Nvim DAP
 vim.keymap.set("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
