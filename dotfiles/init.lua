@@ -159,6 +159,8 @@ vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
 vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
+vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 
 -- Nvim DAP
 vim.keymap.set("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
