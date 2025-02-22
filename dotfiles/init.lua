@@ -22,7 +22,6 @@ vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
--- zf#j creates a fold from the cursor down # lines.
 -- zf/string creates a fold from the cursor to string .
 -- zj moves the cursor to the next fold.
 -- zk moves the cursor to the previous fold.
@@ -63,12 +62,12 @@ require('lazy').setup({
   {"rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}, config = function() require("dapui").setup() end,},
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
   {'neovim/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
-  {'hrsh7th/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
+  {'yobibyte/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
   {'lewis6991/gitsigns.nvim', opts = {signs = {add = { text = '+' }, change = { text = '~' }, changedelete = { text = '~' },},},},
   {'nvim-telescope/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim',
     {'nvim-telescope/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'nvim-treesitter/nvim-treesitter', dependencies = {'nvim-treesitter/nvim-treesitter-textobjects',},build = ':TSUpdate',},
-  {"danymat/neogen", dependencies = "nvim-treesitter/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {}
+  {"yobibyte/neogen", dependencies = "nvim-treesitter/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {}
 )
 
 require('telescope').setup()
