@@ -50,7 +50,7 @@ export YDB_DIR=~/.ydb
 alias m='neomutt'
 alias sm='mw -Y'
 alias c='calcurse'
-alias l='vim ~/sync/links.txt'
+alias l='vim ~/sync/links.md'
 alias b='w3m $(xclip -o -sel clip)'
 alias n='~/scripts/n.sh'
 alias wk='wiki-tui'
@@ -60,3 +60,6 @@ alias p='nvim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 alias jb="just build"
 bindkey -s '^F' 'rga-fzf\n'
+
+# esc-M in w3m to add a link here
+
