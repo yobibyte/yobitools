@@ -49,8 +49,8 @@ require('lazy').setup({
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
-  {'mrcjkb/rustaceanvim',version = '^5',lazy = false, ft="rust"},
-  {'mfussenegger/nvim-dap', 
+  {'yobibyte/rustaceanvim',version = '^5',lazy = false, ft="rust"},
+  {'yobibyte/nvim-dap', 
     config = function()
       local dap, dapui = require("dap"), require("dapui")
       dap.listeners.before.attach.dapui_config = function() dapui.open() end
@@ -59,10 +59,10 @@ require('lazy').setup({
       dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
     end
   },
-  {"rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}, config = function() require("dapui").setup() end,},
-  {'yobibyte/aerial.nvim',opts = {},dependencies = {"nvim-treesitter/nvim-treesitter",},},
-  {'yobibyte/nvim-lspconfig', dependencies = {'williamboman/mason.nvim', 'williamboman/mason-lspconfig.nvim', {'j-hui/fidget.nvim', opts = {} },},},
-  {'yobibyte/nvim-cmp',dependencies = {'L3MON4D3/LuaSnip','saadparwaiz1/cmp_luasnip','hrsh7th/cmp-nvim-lsp',},},
+  {"yobibyte/nvim-dap-ui", dependencies = {"yobibyte/nvim-dap", "yobibyte/nvim-nio"}, config = function() require("dapui").setup() end,},
+  {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
+  {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
+  {'yobibyte/nvim-cmp',dependencies = {'yobibyte/LuaSnip','yobibyte/cmp_luasnip','yobibyte/cmp-nvim-lsp',},},
   {'yobibyte/gitsigns.nvim', opts = {signs = {add = { text = '+' }, change = { text = '~' }, changedelete = { text = '~' },},},},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
     {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
