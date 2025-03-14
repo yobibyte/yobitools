@@ -49,6 +49,7 @@ require('lazy').setup({
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
+  'yobibyte/nvim-treesitter-context',
   {'yobibyte/rustaceanvim',version = '^5',lazy = false, ft="rust"},
   {'yobibyte/nvim-dap', 
     config = function()
@@ -75,6 +76,9 @@ pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').loa
 
 -- Setup treesitter.
 vim.defer_fn(function()
+  vim.keymap.set("n", "[c", function()
+    require("treesitter-context").go_to_context(vim.v.count1)
+  end, { silent = true })
   require('nvim-treesitter.configs').setup {
     ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
     auto_install = false, sync_install = false, modules = {}, highlight = { enable = true }, indent = { enable = true },
