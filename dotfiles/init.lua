@@ -49,6 +49,20 @@ require('lazy').setup({
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
+  { "EdenEast/nightfox.nvim" },
+  -- I want to try this out.
+  -- {
+  --   'projekt0n/github-nvim-theme',
+  --   name = 'github-theme',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('github-theme').setup({
+  --       -- ...
+  --     })
+  --     vim.cmd('colorscheme github_light_high_contrast')
+  --   end,
+  -- },
   'yobibyte/nvim-treesitter-context',
   {'yobibyte/rustaceanvim',version = '^5',lazy = false, ft="rust"},
   {'yobibyte/nvim-dap', 
@@ -177,7 +191,8 @@ vim.keymap.set("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc
 -- rustaceanvim
 vim.keymap.set("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
 
-vim.cmd 'colorscheme helix'
+-- vim.cmd 'colorscheme helix'
+vim.cmd 'colorscheme dayfox'
 
 -- Turn off annoying zls window with diagnostics.
 vim.g.zig_fmt_parse_errors = 0
