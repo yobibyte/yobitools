@@ -23,18 +23,14 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
 -- zf/string creates a fold from the cursor to string .
--- zj moves the cursor to the next fold.
--- zk moves the cursor to the previous fold.
--- zo opens a fold at the cursor.
--- zO opens all folds at the cursor.
--- zm increases the foldlevel by one.
+-- zj/zk moves the cursor to the next/previous fold.
+-- zo/zO opens a fold/all folds at the cursor.
+-- zm/zr increases/decreases the foldlevel by one.
 -- zM closes all open folds.
--- zr decreases the foldlevel by one.
 -- zR decreases the foldlevel to zero -- all folds will be open.
 -- zd deletes the fold at the cursor.
 -- zE deletes all folds.
--- [z move to start of open fold.
--- ]z move to end of open fold.
+-- [z/]z move to start/end of open fold.
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -50,31 +46,7 @@ require('lazy').setup({
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
   { "EdenEast/nightfox.nvim" },
-  -- I want to try this out.
-  -- {
-  --   'projekt0n/github-nvim-theme',
-  --   name = 'github-theme',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require('github-theme').setup({
-  --       -- ...
-  --     })
-  --     vim.cmd('colorscheme github_light_high_contrast')
-  --   end,
-  -- },
   'yobibyte/nvim-treesitter-context',
-  {'yobibyte/rustaceanvim',version = '^5',lazy = false, ft="rust"},
-  {'yobibyte/nvim-dap', 
-    config = function()
-      local dap, dapui = require("dap"), require("dapui")
-      dap.listeners.before.attach.dapui_config = function() dapui.open() end
-      dap.listeners.before.launch.dapui_config = function() dapui.open() end
-      dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
-      dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
-    end
-  },
-  {"yobibyte/nvim-dap-ui", dependencies = {"yobibyte/nvim-dap", "yobibyte/nvim-nio"}, config = function() require("dapui").setup() end,},
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
   {'yobibyte/nvim-cmp',dependencies = {'yobibyte/LuaSnip','yobibyte/cmp_luasnip','yobibyte/cmp-nvim-lsp',},},
@@ -120,26 +92,12 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 end
 require('mason').setup() require('mason-lspconfig').setup()
-local servers = {texlab = {}, pyright = {}, ruff = {}, html = {}, zls = {}}
+local servers = {texlab = {}, pyright = {}, ruff = {}, html = {}, zls = {}, rust_analyzer = {}}
 local capabilities = vim.lsp.protocol.make_client_capabilities() capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
 mason_lspconfig.setup_handlers {function(server_name) require('lspconfig')[server_name].setup {
   capabilities = capabilities, on_attach = on_attach, settings = servers[server_name], filetypes = (servers[server_name] or {}).filetypes, } end,}
-    
--- Rustacean does not use lspconfig to setup. Do it yourself.
-local mason_registry = require('mason-registry')
-local codelldb = mason_registry.get_package('codelldb')
-local extension_path = codelldb:get_install_path() .. "/extension/"
-local codelldb_path = extension_path .. "adapter/codelldb"
-local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
-vim.g.rustaceanvim = {
-  tools = {},
-  server = {on_attach = on_attach,},
-  default_settings = {['rust-analyzer'] = {},},
-  dap = {adapter = require('rustaceanvim.config').get_codelldb_adapter(codelldb_path, liblldb_path)},
-}
-
 -- Setup completion
 local cmp = require 'cmp' local luasnip = require 'luasnip'
 luasnip.config.setup {}
@@ -179,25 +137,8 @@ vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 
--- Nvim DAP
-vim.keymap.set("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
-vim.keymap.set("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugger step over" })
-vim.keymap.set("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
-vim.keymap.set("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
-vim.keymap.set("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
-vim.keymap.set("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Debugger reset" })
-vim.keymap.set("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
-
--- rustaceanvim
-vim.keymap.set("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
-
 -- vim.cmd 'colorscheme helix'
 vim.cmd 'colorscheme dayfox'
-
 -- Turn off annoying zls window with diagnostics.
 vim.g.zig_fmt_parse_errors = 0
--- Fmt on save for Rust.
 vim.g.rustfmt_autosave = 1
-
--- TODO: automate codelldb install
--- Right now we use :MasonInstall codelldb
