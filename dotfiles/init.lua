@@ -1,6 +1,8 @@
 vim.g.mapleader = ' '
-vim.wo.number = true
 vim.g.maplocalleader = ' '
+vim.wo.number = true
+vim.wo.signcolumn = 'yes'
+vim.wo.relativenumber = true
 vim.o.hlsearch = false
 vim.o.mouse = 'i'
 vim.o.clipboard = 'unnamedplus'
@@ -8,29 +10,23 @@ vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
-vim.wo.signcolumn = 'yes'
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
-vim.wo.relativenumber = true
 vim.o.autoread = true
 
--- Setup folding.
+-- zf/string creates a fold from the cursor to string .
+-- zj/zk moves the cursor to the next/previous fold.
+-- zo/zO opens a fold/all folds at the cursor.
+-- zm/zr increases/decreases the foldlevel by one.
+-- zM/zR closes all open folds/opens all folds
+-- [z/]z move to start/end of open fold.
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
--- zf/string creates a fold from the cursor to string .
--- zj/zk moves the cursor to the next/previous fold.
--- zo/zO opens a fold/all folds at the cursor.
--- zm/zr increases/decreases the foldlevel by one.
--- zM closes all open folds.
--- zR decreases the foldlevel to zero -- all folds will be open.
--- zd deletes the fold at the cursor.
--- zE deletes all folds.
--- [z/]z move to start/end of open fold.
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -38,28 +34,25 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- I created forks of all the plugins I use to pin the versions and update when I want.
 require('lazy').setup({
   'yobibyte/vim-fugitive',
   'yobibyte/vim-sleuth', 
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
-  { "EdenEast/nightfox.nvim" },
+  "EdenEast/nightfox.nvim",
   'yobibyte/nvim-treesitter-context',
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
   {'yobibyte/nvim-cmp',dependencies = {'yobibyte/LuaSnip','yobibyte/cmp_luasnip','yobibyte/cmp-nvim-lsp',},},
-  {'yobibyte/gitsigns.nvim', opts = {signs = {add = { text = '+' }, change = { text = '~' }, changedelete = { text = '~' },},},},
+  {'yobibyte/gitsigns.nvim', opts={signs={add ={text='+'},change={text='~'},changedelete={text='~'},},},},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
-    {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
+  {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',},build = ':TSUpdate',},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {}
 )
-
 require('telescope').setup()
 pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').load_extension, 'aerial')
-
 -- Setup treesitter.
 vim.defer_fn(function()
   vim.keymap.set("n", "[c", function()
@@ -77,12 +70,10 @@ vim.defer_fn(function()
       move = { enable = true, set_jumps = true, goto_next_start = {    [']m'] = '@function.outer',[']]'] = '@class.outer',},
         goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},} end, 0
 )
-
 -- Setup lsp servers.
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc }) end
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-h>', vim.lsp.buf.signature_help, 'Signature Documentation')
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
   nmap('gvd', function() vim.cmd('vsplit') vim.cmd('wincmd l') require('telescope.builtin').lsp_definitions() end, '[G]oto [D]efinition')
@@ -108,7 +99,6 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
 
--- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
 
 -- Setup the rest of shortcuts.
@@ -139,6 +129,5 @@ vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true
 
 -- vim.cmd 'colorscheme helix'
 vim.cmd 'colorscheme dayfox'
--- Turn off annoying zls window with diagnostics.
 vim.g.zig_fmt_parse_errors = 0
 vim.g.rustfmt_autosave = 1
