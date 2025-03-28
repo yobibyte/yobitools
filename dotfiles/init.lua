@@ -40,6 +40,7 @@ require('lazy').setup({
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
   "yobibyte/nightfox.nvim",
+  {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   'yobibyte/nvim-treesitter-context',
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
@@ -128,3 +129,13 @@ vim.cmd 'colorscheme dayfox'
 vim.g.zig_fmt_parse_errors = 0
 vim.g.rustfmt_autosave = 1
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
+
+local harpoon = require("harpoon")
+harpoon:setup()
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "<C-a>", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<C-s>", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<C-d>", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<C-[>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<C-]>", function() harpoon:list():next() end)
