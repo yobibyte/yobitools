@@ -33,14 +33,13 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} 
 end
 vim.opt.rtp:prepend(lazypath)
-
 require('lazy').setup({
   'yobibyte/vim-fugitive',
   'yobibyte/vim-sleuth', 
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
-  "EdenEast/nightfox.nvim",
+  "yobibyte/nightfox.nvim",
   'yobibyte/nvim-treesitter-context',
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
@@ -90,8 +89,7 @@ mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
 mason_lspconfig.setup_handlers {function(server_name) require('lspconfig')[server_name].setup {
   capabilities = capabilities, on_attach = on_attach, settings = servers[server_name], filetypes = (servers[server_name] or {}).filetypes, } end,}
 -- Setup completion
-local cmp = require 'cmp' local luasnip = require 'luasnip'
-luasnip.config.setup {}
+local cmp = require 'cmp' local luasnip = require 'luasnip' luasnip.config.setup {}
 cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end,},
   completion = {completeopt = 'menu,menuone,noinsert'},
   mapping = cmp.mapping.preset.insert {
@@ -99,16 +97,14 @@ cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
 
-vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
-
--- Setup the rest of shortcuts.
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set('n', '<leader>/', require('telescope.builtin').current_buffer_fuzzy_find, {})
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, {})
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, {})
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, {})
-vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, {})
+local builtin = require 'telescope.builtin'
+vim.keymap.set('n', '<leader>?',       builtin.oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader><space>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>/',       builtin.current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>sf',      builtin.find_files, {})
+vim.keymap.set('n', '<leader>sg',      builtin.live_grep, {})
+vim.keymap.set('n', '<leader>sd',      builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>sr',      builtin.resume, {})
 vim.keymap.set('n', '<leader>ss', ':Telescope aerial<cr>', {})
 vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
@@ -131,3 +127,4 @@ vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true
 vim.cmd 'colorscheme dayfox'
 vim.g.zig_fmt_parse_errors = 0
 vim.g.rustfmt_autosave = 1
+vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
