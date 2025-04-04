@@ -139,3 +139,4 @@ for i=1,9 do
 end
 vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
+vim.keymap.set("i", "jj", "<Esc>")
