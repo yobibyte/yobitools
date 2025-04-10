@@ -39,7 +39,6 @@ require('lazy').setup({
   'yobibyte/undotree', 
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
-  "yobibyte/nightfox.nvim",
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   'yobibyte/nvim-treesitter-context',
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
@@ -124,8 +123,7 @@ vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 
--- vim.cmd 'colorscheme helix'
-vim.cmd 'colorscheme dayfox'
+vim.cmd 'colorscheme helix'
 vim.g.zig_fmt_parse_errors = 0
 vim.g.rustfmt_autosave = 1
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
