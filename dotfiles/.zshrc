@@ -53,6 +53,7 @@ alias c='calcurse'
 alias l='vim ~/sync/links.md'
 alias b='w3m $(xclip -o -sel clip)'
 alias n='~/scripts/n.sh'
+alias pics='~/scripts/pics.sh'
 alias wk='wiki-tui'
 alias nb='newsboat'
 alias d='w3m duckduckgo.com'
@@ -60,6 +61,7 @@ alias p='nvim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 alias jb="just build"
 bindkey -s '^F' 'rga-fzf\n'
+alias save="monolith"
 
 # esc-M in w3m to add a link here
 

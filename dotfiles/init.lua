@@ -23,7 +23,6 @@ vim.o.autoread = true
 -- zM/zR closes all open folds/opens all folds
 -- [z/]z move to start/end of open fold.
 vim.o.foldmethod = "expr"
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
@@ -71,6 +70,7 @@ vim.defer_fn(function()
 )
 -- Setup lsp servers.
 local on_attach = function(_, bufnr)
+  vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
   local nmap = function(keys, func, desc) vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc }) end
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
