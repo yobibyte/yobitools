@@ -138,3 +138,5 @@ end
 vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
 vim.keymap.set("i", "jj", "<Esc>")
+vim.keymap.set("i", ";;", "<Esc>:w<CR>")
+vim.keymap.set("n", ";;", ":w<CR>")
