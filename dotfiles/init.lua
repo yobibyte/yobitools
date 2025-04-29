@@ -89,13 +89,15 @@ mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
 mason_lspconfig.setup_handlers {function(server_name) require('lspconfig')[server_name].setup {
   capabilities = capabilities, on_attach = on_attach, settings = servers[server_name], filetypes = (servers[server_name] or {}).filetypes, } end,}
 -- Setup completion
+vim.g.cmptoggle = true 
 local cmp = require 'cmp' local luasnip = require 'luasnip' luasnip.config.setup {}
-cmp.setup { snippet = {expand = function(args) luasnip.lsp_expand(args.body) end,},
+cmp.setup { enabled = function() return vim.g.cmptoggle end, snippet = {expand = function(args) luasnip.lsp_expand(args.body) end,},
   completion = {completeopt = 'menu,menuone,noinsert'},
   mapping = cmp.mapping.preset.insert {
     ['<C-n>'] = cmp.mapping.select_next_item(), ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
+vim.keymap.set("n", "<leader>ua", "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>", { desc = "toggle nvim-cmp" })
 
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>?',       builtin.oldfiles, { desc = '[?] Find recently opened files' })
