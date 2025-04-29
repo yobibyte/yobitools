@@ -97,7 +97,7 @@ cmp.setup { enabled = function() return vim.g.cmptoggle end, snippet = {expand =
     ['<C-n>'] = cmp.mapping.select_next_item(), ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<CR>'] = cmp.mapping.confirm {behavior = cmp.ConfirmBehavior.Replace,select = true,},},
   sources = {{ name = 'nvim_lsp' },{ name = 'luasnip' },},}
-vim.keymap.set("n", "<leader>ua", "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>", { desc = "toggle nvim-cmp" })
+vim.keymap.set("n", "<leader>jt", "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>", { desc = "toggle nvim-cmp" })
 
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>?',       builtin.oldfiles, { desc = '[?] Find recently opened files' })
