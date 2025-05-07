@@ -64,4 +64,4 @@ bindkey -s '^F' 'rga-fzf\n'
 alias save="monolith"
 
 # esc-M in w3m to add a link here
-
+alias agi='bash ~/src/google_gemma-3-4b-it-Q6_K.llamafile'

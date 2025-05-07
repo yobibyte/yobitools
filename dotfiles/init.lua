@@ -2,7 +2,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.wo.number = true
 vim.wo.signcolumn = 'yes'
-vim.wo.relativenumber = true
 vim.o.hlsearch = false
 vim.o.mouse = 'i'
 vim.o.clipboard = 'unnamedplus'
@@ -112,8 +111,6 @@ vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
-vim.keymap.set('n', '<leader>nr', ':set number relativenumber<cr>', {})
-vim.keymap.set('n', '<leader>na', ':set number norelativenumber<cr>', {})
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
 vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
