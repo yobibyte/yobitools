@@ -38,7 +38,6 @@ require('lazy').setup({
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
-  'yobibyte/nvim-treesitter-context',
   {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
   {'yobibyte/nvim-cmp',dependencies = {'yobibyte/LuaSnip','yobibyte/cmp_luasnip','yobibyte/cmp-nvim-lsp',},},
@@ -52,9 +51,6 @@ require('telescope').setup()
 pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').load_extension, 'aerial')
 -- Setup treesitter.
 vim.defer_fn(function()
-  vim.keymap.set("n", "[c", function()
-    require("treesitter-context").go_to_context(vim.v.count1)
-  end, { silent = true })
   require('nvim-treesitter.configs').setup {
     ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
     auto_install = false, sync_install = false, modules = {}, highlight = { enable = true }, indent = { enable = true },
@@ -77,8 +73,6 @@ local on_attach = function(_, bufnr)
   nmap('gvd', function() vim.cmd('vsplit') vim.cmd('wincmd l') require('telescope.builtin').lsp_definitions() end, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 end
 require('mason').setup() require('mason-lspconfig').setup()
 local servers = {texlab = {}, pyright = {}, ruff = {}, html = {}, zls = {}, rust_analyzer = {}}
