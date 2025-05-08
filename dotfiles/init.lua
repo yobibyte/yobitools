@@ -88,7 +88,7 @@ mason_lspconfig.setup {ensure_installed = vim.tbl_keys(servers),}
 mason_lspconfig.setup_handlers {function(server_name) require('lspconfig')[server_name].setup {
   capabilities = capabilities, on_attach = on_attach, settings = servers[server_name], filetypes = (servers[server_name] or {}).filetypes, } end,}
 -- Setup completion
-vim.g.cmptoggle = true 
+vim.g.cmptoggle = false
 local cmp = require 'cmp' local luasnip = require 'luasnip' luasnip.config.setup {}
 cmp.setup { enabled = function() return vim.g.cmptoggle end, snippet = {expand = function(args) luasnip.lsp_expand(args.body) end,},
   completion = {completeopt = 'menu,menuone,noinsert'},
