@@ -14,8 +14,6 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.o.autoread = true
-
--- zf/string creates a fold from the cursor to string .
 -- zj/zk moves the cursor to the next/previous fold.
 -- zo/zO opens a fold/all folds at the cursor.
 -- zm/zr increases/decreases the foldlevel by one.
@@ -38,7 +36,6 @@ require('lazy').setup({
   'yobibyte/Comment.nvim',
   'yobibyte/helix-nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
-  {'yobibyte/aerial.nvim',opts = {},dependencies = {"yobibyte/nvim-treesitter",},},
   {'yobibyte/nvim-lspconfig', dependencies = {'yobibyte/mason.nvim', 'yobibyte/mason-lspconfig.nvim', {'yobibyte/fidget.nvim', opts = {} },},},
   {'yobibyte/nvim-cmp',dependencies = {'yobibyte/LuaSnip','yobibyte/cmp_luasnip','yobibyte/cmp-nvim-lsp',},},
   {'yobibyte/gitsigns.nvim', opts={signs={add ={text='+'},change={text='~'},changedelete={text='~'},},},},
@@ -48,8 +45,6 @@ require('lazy').setup({
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {}
 )
 require('telescope').setup()
-pcall(require('telescope').load_extension, 'fzf') pcall(require('telescope').load_extension, 'aerial')
--- Setup treesitter.
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
@@ -100,7 +95,6 @@ vim.keymap.set('n', '<leader>sf',      builtin.find_files, {})
 vim.keymap.set('n', '<leader>sg',      builtin.live_grep, {})
 vim.keymap.set('n', '<leader>sd',      builtin.diagnostics, {})
 vim.keymap.set('n', '<leader>sr',      builtin.resume, {})
-vim.keymap.set('n', '<leader>ss', ':Telescope aerial<cr>', {})
 vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
@@ -108,13 +102,15 @@ vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
 vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
-vim.keymap.set("n", "<leader>b", ":Cargo build<CR>", {})
 vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
 vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
+vim.keymap.set("i", "jj", "<Esc>")
+vim.keymap.set("i", ";;", "<Esc>:w<CR>")
+vim.keymap.set("n", ";;", ":w<CR>")
 
 vim.cmd 'colorscheme helix'
 vim.g.zig_fmt_parse_errors = 0
@@ -130,6 +126,3 @@ for i=1,9 do
 end
 vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
-vim.keymap.set("i", "jj", "<Esc>")
-vim.keymap.set("i", ";;", "<Esc>:w<CR>")
-vim.keymap.set("n", ";;", ":w<CR>")
