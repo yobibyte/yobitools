@@ -93,27 +93,24 @@ vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
 -- Alternative to go to definition.
 vim.api.nvim_create_user_command("PySources", function()
-  local handle = io.popen("python3 -c 'import site; print(site.getsitepackages()[0])'")
-  if handle then
-    local path = handle:read("*a"):gsub("%s+$", "")
-    handle:close()
-    vim.cmd("edit " .. path .. "/.")
-  end
+  vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.")
 end, {})
 vim.api.nvim_create_user_command("RustSources", function()
-  local registry_path = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-  local handle = io.popen("ls -1 " .. registry_path)
-  local full_path = registry_path .. "/" .. handle:read("*l") 
-  handle:close()
-  vim.cmd("edit " .. full_path .. "/.")
+  local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
+  local dir = vim.fn.systemlist("ls -1 " .. registry)[1]
+  vim.cmd("edit " .. registry .. "/" .. dir .. "/.")
 end, {})
+
 vim.api.nvim_create_user_command("SearchDocs", function()
-  local cwd = vim.fn.expand('%:p:h')
-  require('telescope.builtin').grep_string({search = '',cwd = cwd,})
+  local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,})
+end, {})
+vim.api.nvim_create_user_command("SearchDocFiles", function()
+  local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').find_files({cwd = cwd,})
 end, {})
 vim.api.nvim_set_keymap('n', '<leader>gp', ':PySources<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>sd', ':SearchDocs<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
 -- visuals
 vim.cmd 'colorscheme darkblue'
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
