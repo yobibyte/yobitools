@@ -14,16 +14,12 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.o.autoread = true
--- zj/zk | zo/zO | zm/zr | zM/zR | [z/]z
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
 vim.cmd 'colorscheme darkblue'
--- plugins
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} 
-end
+if not vim.loop.fs_stat(lazypath) then vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} end
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
@@ -67,7 +63,6 @@ vim.keymap.set('n', '<leader>/',       builtin.current_buffer_fuzzy_find, {})
 vim.keymap.set('n', '<leader>sf',      builtin.find_files, {})
 vim.keymap.set('n', '<leader>sg',      builtin.live_grep, {})
 vim.keymap.set('n', '<leader>sr',      builtin.resume, {})
---non telescope hotkeys
 vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
@@ -82,15 +77,12 @@ vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("i", ";;", "<Esc>:w<CR>")
 vim.keymap.set("n", ";;", ":w<CR>")
--- harpoon
-local harpoon = require("harpoon")
-harpoon:setup()
+local harpoon = require("harpoon") harpoon:setup()
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
 vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
--- Alternative to go to definition.
 vim.api.nvim_create_user_command("PySources", function()
   vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.")
 end, {})
@@ -99,12 +91,8 @@ vim.api.nvim_create_user_command("RustSources", function()
   local dir = vim.fn.systemlist("ls -1 " .. registry)[1]
   vim.cmd("edit " .. registry .. "/" .. dir .. "/.")
 end, {})
-vim.api.nvim_create_user_command("SearchDocs", function()
-  local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,})
-end, {})
-vim.api.nvim_create_user_command("SearchDocFiles", function()
-  local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').find_files({cwd = cwd,})
-end, {})
+vim.api.nvim_create_user_command("SearchDocs", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,}) end, {})
+vim.api.nvim_create_user_command("SearchDocFiles", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').find_files({cwd = cwd,}) end, {})
 vim.api.nvim_set_keymap('n', '<leader>gp', ':PySources<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
