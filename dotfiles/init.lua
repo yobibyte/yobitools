@@ -25,7 +25,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
-  'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim','yobibyte/helix-nvim',
+  'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   {'yobibyte/gitsigns.nvim', opts={signs={add ={text='+'},change={text='~'},changedelete={text='~'},},},},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
@@ -115,5 +115,5 @@ vim.api.nvim_set_keymap('n', '<leader>gp', ':PySources<CR>', { noremap = true, s
 vim.api.nvim_set_keymap('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sd', ':SearchDocs<CR>', { noremap = true, silent = true })
 -- visuals
-vim.cmd 'colorscheme helix'
+vim.cmd 'colorscheme darkblue'
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
