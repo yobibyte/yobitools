@@ -49,8 +49,6 @@ vim.defer_fn(function()
         if pcall(vim.treesitter.get_parser, bufnr) then
           vim.wo.foldmethod = "expr"
           vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-        else
-          vim.wo.foldmethod = "manual"
         end
       end,
     })
