@@ -18,6 +18,7 @@ vim.o.autoread = true
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
+vim.cmd 'colorscheme darkblue'
 -- plugins
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -86,9 +87,7 @@ local harpoon = require("harpoon")
 harpoon:setup()
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-for i=1,9 do
-  vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end)
-end
+for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
 vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
 -- Alternative to go to definition.
@@ -100,7 +99,6 @@ vim.api.nvim_create_user_command("RustSources", function()
   local dir = vim.fn.systemlist("ls -1 " .. registry)[1]
   vim.cmd("edit " .. registry .. "/" .. dir .. "/.")
 end, {})
-
 vim.api.nvim_create_user_command("SearchDocs", function()
   local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,})
 end, {})
@@ -111,6 +109,4 @@ vim.api.nvim_set_keymap('n', '<leader>gp', ':PySources<CR>', { noremap = true, s
 vim.api.nvim_set_keymap('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
--- visuals
-vim.cmd 'colorscheme darkblue'
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
