@@ -17,6 +17,7 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
 vim.cmd 'colorscheme darkblue'
+vim.cmd 'syntax off'
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} end
 vim.opt.rtp:prepend(lazypath)
@@ -45,6 +46,7 @@ vim.defer_fn(function()
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "FileType" }, {
       callback = function()
         local bufnr = vim.api.nvim_get_current_buf()
+        vim.cmd("TSBufDisable highlight")
         if pcall(vim.treesitter.get_parser, bufnr) then
           vim.wo.foldmethod = "expr"
           vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
