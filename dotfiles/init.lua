@@ -25,11 +25,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
-  'yobibyte/vim-fugitive',
-  'yobibyte/vim-sleuth', 
-  'yobibyte/undotree', 
-  'yobibyte/Comment.nvim',
-  'yobibyte/helix-nvim',
+  'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim','yobibyte/helix-nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   {'yobibyte/gitsigns.nvim', opts={signs={add ={text='+'},change={text='~'},changedelete={text='~'},},},},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
