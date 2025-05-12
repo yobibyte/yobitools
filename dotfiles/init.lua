@@ -8,7 +8,6 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.o.termguicolors = true
-vim.o.autoread = true
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 4
 vim.o.foldnestmax = 4
@@ -55,9 +54,6 @@ vim.keymap.set('n', '<leader>sr',      builtin.resume, {})
 vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
 vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
-vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
-vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
-vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("i", ";;", "<Esc>:w<CR>")
@@ -71,8 +67,7 @@ vim.api.nvim_create_user_command("PySources", function()
 end, {})
 vim.api.nvim_create_user_command("RustSources", function()
   local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-  local dir = vim.fn.systemlist("ls -1 " .. registry)[1]
-  vim.cmd("edit " .. registry .. "/" .. dir .. "/.")
+  vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1] .. "/.")
 end, {})
 vim.api.nvim_create_user_command("SearchDocs", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,}) end, {})
 vim.api.nvim_create_user_command("SearchDocFiles", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').find_files({cwd = cwd,}) end, {})
