@@ -22,12 +22,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim', 'yobibyte/helix-nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
-  {'yobibyte/gitsigns.nvim', opts={signs={add ={text='+'},change={text='~'},changedelete={text='~'},},},},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
   {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',},build = ':TSUpdate',},
-  {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {}
-)
+  {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
 require('telescope').setup()
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
