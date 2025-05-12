@@ -40,8 +40,7 @@ vim.defer_fn(function()
         goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},}
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "FileType" }, {
       callback = function()
-        local bufnr = vim.api.nvim_get_current_buf()
-        if pcall(vim.treesitter.get_parser, bufnr) then
+        if pcall(vim.treesitter.get_parser, vim.api.nvim_get_current_buf()) then
           vim.wo.foldmethod = "expr"
           vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
         end
