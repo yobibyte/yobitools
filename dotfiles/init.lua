@@ -28,7 +28,7 @@ require('lazy').setup({
 require('telescope').setup()
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
-    ensure_installed = { 'latex', 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
+    ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
     auto_install = false, sync_install = false, modules = {}, highlight = { enable = false }, indent = { enable = true },
     incremental_selection = { enable = true,
       keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', scope_incremental = '<c-s>', node_decremental = '<M-space>',},},
