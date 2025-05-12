@@ -34,14 +34,6 @@ vim.defer_fn(function()
                    ['if'] = '@function.inner',  ['ac'] = '@class.outer',     ['ic'] = '@class.inner',},},
       move = { enable = true, set_jumps = true, goto_next_start = {    [']m'] = '@function.outer',[']]'] = '@class.outer',},
         goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},}
-    vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "FileType" }, {
-      callback = function()
-        if pcall(vim.treesitter.get_parser, vim.api.nvim_get_current_buf()) then
-          vim.wo.foldmethod = "expr"
-          vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-        end
-      end,
-    })
   end, 0
 )
 local builtin = require 'telescope.builtin'
@@ -77,3 +69,5 @@ vim.api.nvim_set_keymap('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, 
 vim.api.nvim_set_keymap('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
 vim.cmd 'colorscheme retrobox'
+vim.wo.foldmethod = "expr"
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
