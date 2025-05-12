@@ -18,8 +18,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
-  {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim',
-  {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
+  {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',},build = ':TSUpdate',},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
 require('telescope').setup()
@@ -32,9 +31,7 @@ vim.defer_fn(function()
       select = { enable = true, lookahead = true,
         keymaps = {['aa'] = '@parameter.outer', ['ia'] = '@parameter.inner', ['af'] = '@function.outer',
                    ['if'] = '@function.inner',  ['ac'] = '@class.outer',     ['ic'] = '@class.inner',},},
-      move = { enable = true, set_jumps = true, goto_next_start = {    [']m'] = '@function.outer',[']]'] = '@class.outer',},
-        goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},}
-  end, 0
+      move = { enable = true, set_jumps = true, goto_next_start = {    [']m'] = '@function.outer',[']]'] = '@class.outer',}, goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},} end, 0
 )
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>?',       builtin.oldfiles, { desc = '[?] Find recently opened files' })
@@ -44,11 +41,9 @@ vim.keymap.set('n', '<leader>sf',      builtin.find_files, {})
 vim.keymap.set('n', '<leader>sg',      builtin.live_grep, {})
 vim.keymap.set('n', '<leader>sr',      builtin.resume, {})
 vim.keymap.set('n', "<leader>t", vim.cmd.Ex)
-vim.keymap.set('n', "<leader>k", vim.cmd.UndotreeToggle)
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
-vim.keymap.set("i", ";;", "<Esc>:w<CR>")
 vim.keymap.set("n", ";;", ":w<CR>")
 local harpoon = require("harpoon") harpoon:setup()
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
@@ -61,13 +56,13 @@ vim.api.nvim_create_user_command("RustSources", function()
   local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
   vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1] .. "/.")
 end, {})
+vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
 vim.api.nvim_create_user_command("SearchDocs", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').grep_string({search = '',cwd = cwd,}) end, {})
 vim.api.nvim_create_user_command("SearchDocFiles", function() local cwd = vim.fn.expand('%:p:h') require('telescope.builtin').find_files({cwd = cwd,}) end, {})
-vim.api.nvim_set_keymap('n', '<leader>gp', ':PySources<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
-vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
+vim.keymap.set('n', '<leader>gp', ':PySources<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
 vim.cmd 'colorscheme retrobox'
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
