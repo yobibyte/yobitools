@@ -1,14 +1,12 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.wo.number = true
-vim.o.mouse = 'i'
 vim.o.clipboard = 'unnamedplus'
 vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.o.autoread = true
 vim.o.foldlevel = 99
@@ -30,8 +28,7 @@ vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, ignore_install = {'javascript', 'vim'},
     auto_install = false, sync_install = false, modules = {}, highlight = { enable = false }, indent = { enable = true },
-    incremental_selection = { enable = true,
-      keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', scope_incremental = '<c-s>', node_decremental = '<M-space>',},},
+    incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', scope_incremental = '<c-s>', node_decremental = '<M-space>',},},
     textobjects = {
       select = { enable = true, lookahead = true,
         keymaps = {['aa'] = '@parameter.outer', ['ia'] = '@parameter.inner', ['af'] = '@function.outer',
@@ -62,10 +59,6 @@ vim.keymap.set('n', '<leader>n', ':bn<CR>', {})
 vim.keymap.set('n', '<leader>p', ':bp<CR>', {})
 vim.keymap.set("n", "<leader>q", ":bd<CR>", {})
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
-vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
-vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
-vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("i", ";;", "<Esc>:w<CR>")
 vim.keymap.set("n", ";;", ":w<CR>")
@@ -73,8 +66,6 @@ local harpoon = require("harpoon") harpoon:setup()
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
-vim.keymap.set("n", "<C-h>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<C-l>", function() harpoon:list():next() end)
 vim.api.nvim_create_user_command("PySources", function()
   vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.")
 end, {})
