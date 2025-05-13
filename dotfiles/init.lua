@@ -52,6 +52,6 @@ vim.keymap.set('n', '<leader>gp', ':PySources<CR>', { noremap = true, silent = t
 vim.keymap.set('n', '<leader>gr', ':RustSources<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
-vim.cmd 'colorscheme retrobox'
+vim.cmd 'colorscheme darkblue'
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
