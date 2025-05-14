@@ -35,7 +35,7 @@ vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
 vim.api.nvim_create_user_command("PySources", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.") end, {})
-vim.api.nvim_create_user_command("RustSources", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1] .. "/.") end, {})
+vim.api.nvim_create_user_command("RustSources", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end, {})
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
 vim.keymap.set('n', '<leader>df', function() builtin.find_files({cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ds', function() builtin.grep_string({search = '',cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
