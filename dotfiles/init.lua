@@ -18,8 +18,7 @@ require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',}, build = ':TSUpdate', main='nvim-treesitter.configs', 
     opts = {ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, auto_install = true, sync_install = false, indent = { enable = true },
     incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', node_decremental = '<M-space>',},},
-    textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},
-    move = { enable = true, set_jumps = true, goto_next_start = {[']m'] = '@function.outer',[']]'] = '@class.outer',}, goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},},},
+    textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},},},},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>?',       builtin.oldfiles)
