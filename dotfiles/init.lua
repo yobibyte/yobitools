@@ -13,7 +13,7 @@ vim.cmd 'syntax off'
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} end
 vim.opt.rtp:prepend(lazypath)
-require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
+require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim', 'yobibyte/github-monochrome.nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',}, build = ':TSUpdate', main='nvim-treesitter.configs', 
@@ -39,6 +39,6 @@ vim.api.nvim_create_user_command("RustSources", function() local registry = os.g
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
 vim.keymap.set('n', '<leader>df', function() builtin.find_files({cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ds', function() builtin.grep_string({search = '',cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
-vim.cmd 'colorscheme darkblue'
+vim.cmd 'colorscheme github-monochrome-solarized'
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
