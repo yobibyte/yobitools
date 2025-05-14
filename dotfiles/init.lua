@@ -16,9 +16,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
   {'yobibyte/telescope.nvim', defaults={file_ignore_patterns={".venv.",},}, branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
-  {'yobibyte/nvim-treesitter', 
-    dependencies = {'yobibyte/nvim-treesitter-textobjects',}, build = ':TSUpdate', main='nvim-treesitter.configs', 
-    opts = {ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, auto_install = true, sync_install = false, highlight = { enable = false }, indent = { enable = true },
+  {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',}, build = ':TSUpdate', main='nvim-treesitter.configs', 
+    opts = {ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, auto_install = true, sync_install = false, indent = { enable = true },
     incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', node_decremental = '<M-space>',},},
     textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},
     move = { enable = true, set_jumps = true, goto_next_start = {[']m'] = '@function.outer',[']]'] = '@class.outer',}, goto_previous_start = {['[m'] = '@function.outer',['[['] = '@class.outer',},},},},},
@@ -29,7 +28,6 @@ vim.keymap.set('n', '<leader><space>', builtin.buffers)
 vim.keymap.set('n', '<leader>sf',      builtin.find_files)
 vim.keymap.set('n', '<leader>sg',      builtin.live_grep)
 vim.keymap.set('n', '<leader>sr',      builtin.resume)
-vim.keymap.set('n', "<leader>t",       vim.cmd.Ex)
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 local harpoon = require("harpoon") harpoon:setup()
@@ -39,10 +37,8 @@ for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harp
 vim.api.nvim_create_user_command("PySources", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.") end, {})
 vim.api.nvim_create_user_command("RustSources", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1] .. "/.") end, {})
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
-vim.api.nvim_create_user_command("SearchDocs", function() builtin.grep_string({search = '',cwd = vim.fn.expand('%:p:h'),}) end, {})
-vim.api.nvim_create_user_command("SearchDocFiles", function() builtin.find_files({cwd = vim.fn.expand('%:p:h'),}) end, {})
-vim.keymap.set('n', '<leader>ds', ':SearchDocs<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>df', ':SearchDocFiles<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>df', function() builtin.find_files({cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ds', function() builtin.grep_string({search = '',cwd = vim.fn.expand('%:p:h'),}) end, { noremap = true, silent = true })
 vim.cmd 'colorscheme darkblue'
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
