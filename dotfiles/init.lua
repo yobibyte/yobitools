@@ -20,12 +20,11 @@ require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte
     incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', node_decremental = '<M-space>',},},
     textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},},},},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
-local builtin = require 'telescope.builtin'
-vim.keymap.set('n', '<leader>?',       builtin.oldfiles)
-vim.keymap.set('n', '<leader><space>', builtin.buffers)
-vim.keymap.set('n', '<leader>sf',      builtin.find_files)
-vim.keymap.set('n', '<leader>sg',      builtin.live_grep)
-vim.keymap.set('n', '<leader>sr',      builtin.resume)
+vim.keymap.set('n', '<leader>?',       require('telescope.builtin').oldfiles)
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers)
+vim.keymap.set('n', '<leader>sf',      require('telescope.builtin').find_files)
+vim.keymap.set('n', '<leader>sg',      require('telescope.builtin').live_grep)
+vim.keymap.set('n', '<leader>sr',      require('telescope.builtin').resume)
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 local harpoon = require("harpoon") harpoon:setup()
