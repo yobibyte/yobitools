@@ -41,4 +41,4 @@ vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.cmd 'colorscheme retrobox'
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00",})
-
+vim.api.nvim_create_autocmd("FileType", {pattern = "*", callback = function() vim.cmd("TSEnable highlight") vim.cmd("TSDisable highlight") end,})
