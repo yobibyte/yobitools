@@ -21,59 +21,56 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup(
+require("lazy").setup({
+  "yobibyte/vim-fugitive",
+  "yobibyte/vim-sleuth",
+  "yobibyte/undotree",
+  "yobibyte/Comment.nvim",
   {
-    "yobibyte/vim-fugitive",
-    "yobibyte/vim-sleuth",
-    "yobibyte/undotree",
-    "yobibyte/Comment.nvim",
-    {
-      "yobibyte/harpoon",
-      branch = "harpoon2",
-      dependencies = { "yobibyte/plenary.nvim" },
-    },
-    {
-      "yobibyte/nvim-treesitter",
-      dependencies = { "yobibyte/nvim-treesitter-textobjects" },
-      build = ":TSUpdate",
-      main = "nvim-treesitter.configs",
-      opts = {
-        ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" },
-        auto_install = true,
-        sync_install = false,
-        indent = { enable = true },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<c-space>",
-            node_incremental = "<c-space>",
-            node_decremental = "<M-space>",
-          },
-        },
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ["ia"] = "@parameter.inner",
-              ["af"] = "@function.outer",
-              ["ac"] = "@class.outer",
-            },
-          },
+    "yobibyte/harpoon",
+    branch = "harpoon2",
+    dependencies = { "yobibyte/plenary.nvim" },
+  },
+  {
+    "yobibyte/nvim-treesitter",
+    dependencies = { "yobibyte/nvim-treesitter-textobjects" },
+    build = ":TSUpdate",
+    main = "nvim-treesitter.configs",
+    opts = {
+      ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" },
+      auto_install = true,
+      sync_install = false,
+      indent = { enable = true },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "<c-space>",
+          node_incremental = "<c-space>",
+          node_decremental = "<M-space>",
         },
       },
-    },
-    {
-      "yobibyte/neogen",
-      dependencies = "yobibyte/nvim-treesitter",
-      config = true,
-      languages = {
-        python = { template = { annotation_convention = "google_docstrings" } },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["ia"] = "@parameter.inner",
+            ["af"] = "@function.outer",
+            ["ac"] = "@class.outer",
+          },
+        },
       },
     },
   },
-  {}
-)
+  {
+    "yobibyte/neogen",
+    dependencies = "yobibyte/nvim-treesitter",
+    config = true,
+    languages = {
+      python = { template = { annotation_convention = "google_docstrings" } },
+    },
+  },
+}, {})
 vim.keymap.set(
   "n",
   "<leader>cc",
@@ -183,7 +180,31 @@ local function scratch_to_quickfix()
 end
 
 vim.keymap.set("n", "<leader>q", scratch_to_quickfix, {})
-vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "pattern: " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end, {})
-vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end, {})
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "Search pattern: " }, function(pattern) if pattern then vim.cmd("TextSearch" .. pattern) end end) end, {})
-vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "Search pattern: " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
+vim.keymap.set("n", "<leader>sf", function()
+  vim.ui.input({ prompt = "pattern: " }, function(name)
+    if name then
+      vim.cmd("FileSearch " .. name)
+    end
+  end)
+end, {})
+vim.keymap.set("n", "<leader>lf", function()
+  vim.ui.input({ prompt = "Search pattern: " }, function(name)
+    if name then
+      vim.cmd("FileSearch! " .. name)
+    end
+  end)
+end, {})
+vim.keymap.set("n", "<leader>sg", function()
+  vim.ui.input({ prompt = "Search pattern: " }, function(pattern)
+    if pattern then
+      vim.cmd("TextSearch" .. pattern)
+    end
+  end)
+end, {})
+vim.keymap.set("n", "<leader>lg", function()
+  vim.ui.input({ prompt = "Search pattern: " }, function(pattern)
+    if pattern then
+      vim.cmd("TextSearch! " .. pattern)
+    end
+  end)
+end, {})
