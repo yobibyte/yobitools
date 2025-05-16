@@ -92,7 +92,8 @@ end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  run_search("grep -Enr " .. "'" .. opts.args .. "' " .. path)
+  -- TODO(yobibyte): add .venv only to cwd search though. Doc search should include .venv.
+  run_search("grep -IEnr --exclude-dir=.git --exclude-dir='*.egg-info' " .. "'" .. opts.args .. "' " .. path)
 end, { nargs = "+", bang = true })
 
 local function scratch_to_quickfix()
@@ -130,5 +131,7 @@ end
 vim.keymap.set("n", "<leader>q", scratch_to_quickfix, {})
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end, {})
 vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end, {})
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch" .. pattern) end end) end, {})
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch " .. pattern) end end) end, {})
 vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
+vim.keymap.set("n", "<leader>g", ":find ")
+
