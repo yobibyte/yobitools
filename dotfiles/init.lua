@@ -6,8 +6,7 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.o.foldlevelstart = 4
-vim.o.foldnestmax = 4
+vim.o.foldlevelstart = 99
 vim.cmd 'syntax off'
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then vim.fn.system {'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,} end
@@ -20,7 +19,6 @@ require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte
     incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', node_decremental = '<M-space>',},},
     textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},},},},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
-vim.keymap.set('n', '<leader>?',       require('telescope.builtin').oldfiles)
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers)
 vim.keymap.set('n', '<leader>sf',      require('telescope.builtin').find_files)
 vim.keymap.set('n', '<leader>sg',      require('telescope.builtin').live_grep)
