@@ -14,15 +14,11 @@ if not vim.loop.fs_stat(lazypath) then vim.fn.system {'git', 'clone', '--filter=
 vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({'yobibyte/vim-fugitive', 'yobibyte/vim-sleuth', 'yobibyte/undotree', 'yobibyte/Comment.nvim',
   {"yobibyte/harpoon",branch = "harpoon2",dependencies = { "yobibyte/plenary.nvim" }},
-  {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   {'yobibyte/nvim-treesitter', dependencies = {'yobibyte/nvim-treesitter-textobjects',}, build = ':TSUpdate', main='nvim-treesitter.configs', 
     opts = {ensure_installed = { 'c', 'cpp', 'python', 'rust', 'bash', 'zig' }, auto_install = true, sync_install = false, indent = { enable = true },
     incremental_selection = { enable = true, keymaps = {init_selection = '<c-space>', node_incremental = '<c-space>', node_decremental = '<M-space>',},},
     textobjects = { select = { enable = true, lookahead = true, keymaps = {['ia'] = '@parameter.inner', ['af'] = '@function.outer', ['ac'] = '@class.outer',},},},},},
   {"yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } } },}}, {})
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers)
-vim.keymap.set('n', '<leader>sf',      require('telescope.builtin').find_files)
-vim.keymap.set('n', '<leader>sg',      require('telescope.builtin').live_grep)
 vim.keymap.set("n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 local harpoon = require("harpoon") harpoon:setup() for i=1,9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
@@ -31,10 +27,40 @@ vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:lis
 vim.api.nvim_create_user_command("PySources", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") .. "/.") end, {})
 vim.api.nvim_create_user_command("RustSources", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end, {})
 vim.api.nvim_create_autocmd('TextYankPost', {callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup('YankHighlight', {clear = true }), pattern = '*',})
-vim.keymap.set('n', '<leader>df', function() require('telescope.builtin').find_files({cwd = vim.fn.expand('%:p:h'), no_ignore=true}) end, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ds', function() require('telescope.builtin').live_grep({cwd = vim.fn.expand('%:p:h'), additional_args = function() return { "--hidden", "--no-ignore" } end}) end, { noremap = true, silent = true })
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.cmd 'colorscheme retrobox'
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00",})
 vim.api.nvim_create_autocmd("FileType", {pattern = "*", callback = function() vim.cmd("TSEnable highlight") vim.cmd("TSDisable highlight") end,})
+
+local function run_search(cmd)
+  local output = vim.fn.systemlist(cmd)
+  vim.cmd("enew")
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, output)
+  vim.bo.buftype = "nofile"
+  vim.bo.bufhidden = "wipe"
+  vim.bo.swapfile = false
+end
+
+vim.api.nvim_create_user_command("FileSearch", function(opts)
+  local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local cmd = "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'"
+  run_search(cmd)
+end, {
+  nargs = '+',
+  bang = true,
+})
+
+vim.api.nvim_create_user_command("TextSearch", function(opts)
+  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local cmd = "grep -Enr " .. "'" .. opts.args .. "' " .. path
+  run_search(cmd)
+end, {
+  nargs = '+',
+  bang = true,
+})
+
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("FileSearch " .. name) end) end, {})
+vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("FileSearch! " .. name) end) end, {})
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("TextSearch" .. name) end) end, {})
+vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("TextSearch! " .. name) end) end, {})
