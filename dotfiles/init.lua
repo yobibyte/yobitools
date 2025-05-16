@@ -11,28 +11,13 @@ vim.opt.path:append("**")
 vim.cmd("syntax off")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
 end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  "yobibyte/vim-fugitive",
-  "yobibyte/vim-sleuth",
-  "yobibyte/undotree",
-  "yobibyte/Comment.nvim",
-  {
-    "yobibyte/harpoon",
-    branch = "harpoon2",
-    dependencies = { "yobibyte/plenary.nvim" },
-  },
-  {
-    "yobibyte/nvim-treesitter",
+  "yobibyte/vim-fugitive", "yobibyte/vim-sleuth", "yobibyte/Comment.nvim",
+  { "yobibyte/harpoon", branch = "harpoon2", dependencies = { "yobibyte/plenary.nvim" }, },
+  { "yobibyte/nvim-treesitter",
     dependencies = { "yobibyte/nvim-treesitter-textobjects" },
     build = ":TSUpdate",
     main = "nvim-treesitter.configs",
@@ -44,61 +29,28 @@ require("lazy").setup({
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<c-space>",
-          node_incremental = "<c-space>",
-          node_decremental = "<M-space>",
-        },
+          init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>", },
       },
       textobjects = {
         select = {
           enable = true,
           lookahead = true,
           keymaps = {
-            ["ia"] = "@parameter.inner",
-            ["af"] = "@function.outer",
-            ["ac"] = "@class.outer",
-          },
+            ["ia"] = "@parameter.inner", ["af"] = "@function.outer", ["ac"] = "@class.outer", },
         },
       },
     },
   },
-  {
-    "yobibyte/neogen",
-    dependencies = "yobibyte/nvim-treesitter",
-    config = true,
-    languages = {
-      python = { template = { annotation_convention = "google_docstrings" } },
-    },
-  },
+  { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
-vim.keymap.set(
-  "n",
-  "<leader>cc",
-  ":lua require('neogen').generate()<CR>",
-  { noremap = true, silent = true }
-)
+vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
-local harpoon = require("harpoon")
-harpoon:setup()
-for i = 1, 9 do
-  vim.keymap.set("n", string.format("<leader>%d", i), function()
-    harpoon:list():select(i)
-  end)
-end
-vim.keymap.set("n", "<leader>a", function()
-  harpoon:list():add()
-end)
-vim.keymap.set("n", "<C-e>", function()
-  harpoon.ui:toggle_quick_menu(harpoon:list())
-end)
+local harpoon = require("harpoon") harpoon:setup()
+for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 vim.api.nvim_create_user_command("PySources", function()
-  vim.cmd(
-    "edit "
-      .. vim.fn
-        .system("python3 -c 'import site; print(site.getsitepackages()[0])'")
-        :gsub("%s+$", "")
-      .. "/."
-  )
+  vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
 end, {})
 vim.api.nvim_create_user_command("RustSources", function()
   local registry = os.getenv("CARGO_HOME")
@@ -108,9 +60,7 @@ vim.api.nvim_create_user_command("RustSources", function()
   )
 end, {})
 vim.api.nvim_create_autocmd("TextYankPost", {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
+  callback = function() vim.highlight.on_yank() end,
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
   pattern = "*",
 })
@@ -125,7 +75,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.cmd("TSDisable highlight")
   end,
 })
-
+-- Mom, can we have telescope? No, we have telescope at home. Telescope at home:
 local function run_search(cmd)
   local output = vim.fn.systemlist(cmd)
   vim.cmd("enew")
@@ -137,9 +87,7 @@ end
 
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  run_search(
-    "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'"
-  )
+  run_search( "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'")
 end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
@@ -180,31 +128,7 @@ local function scratch_to_quickfix()
 end
 
 vim.keymap.set("n", "<leader>q", scratch_to_quickfix, {})
-vim.keymap.set("n", "<leader>sf", function()
-  vim.ui.input({ prompt = "pattern: " }, function(name)
-    if name then
-      vim.cmd("FileSearch " .. name)
-    end
-  end)
-end, {})
-vim.keymap.set("n", "<leader>lf", function()
-  vim.ui.input({ prompt = "Search pattern: " }, function(name)
-    if name then
-      vim.cmd("FileSearch! " .. name)
-    end
-  end)
-end, {})
-vim.keymap.set("n", "<leader>sg", function()
-  vim.ui.input({ prompt = "Search pattern: " }, function(pattern)
-    if pattern then
-      vim.cmd("TextSearch" .. pattern)
-    end
-  end)
-end, {})
-vim.keymap.set("n", "<leader>lg", function()
-  vim.ui.input({ prompt = "Search pattern: " }, function(pattern)
-    if pattern then
-      vim.cmd("TextSearch! " .. pattern)
-    end
-  end)
-end, {})
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end, {})
+vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end, {})
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch" .. pattern) end end) end, {})
+vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
