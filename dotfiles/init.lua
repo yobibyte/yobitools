@@ -44,22 +44,48 @@ end
 
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local cmd = "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'"
-  run_search(cmd)
-end, {
-  nargs = '+',
-  bang = true,
-})
+  run_search("find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'")
+end, {nargs = '+',bang = true,})
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local cmd = "grep -Enr " .. "'" .. opts.args .. "' " .. path
-  run_search(cmd)
-end, {
-  nargs = '+',
-  bang = true,
-})
+  run_search("grep -Enr " .. "'" .. opts.args .. "' " .. path)
+end, {nargs = '+',bang = true,})
 
+local function scratch_to_quickfix()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local items = {}
+  for _, line in ipairs(lines) do
+    if line ~= "" then
+      local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
+      if filename and lnum then
+        --for grep filename:line:text
+        table.insert(items, {
+          filename = vim.fn.fnamemodify(filename, ":p"),
+          lnum = tonumber(lnum),
+          col = 1,
+          text = text,
+        })
+      else
+        -- for find results, only fnames
+        table.insert(items, {
+          filename = vim.fn.fnamemodify(line, ":p"),
+          lnum = 1,
+          col = 1,
+          text = "",
+        })
+      end
+    end
+  end
+
+  vim.fn.setqflist(items, 'r')
+  vim.cmd("copen")
+  vim.cmd("cc")
+  vim.api.nvim_buf_delete(bufnr, { force = true })
+end
+
+vim.keymap.set('n', '<leader>q', scratch_to_quickfix, {})
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("FileSearch " .. name) end) end, {})
 vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("FileSearch! " .. name) end) end, {})
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "Search pattern: " }, function(name) vim.cmd("TextSearch" .. name) end) end, {})
