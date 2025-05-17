@@ -29,27 +29,19 @@ require("lazy").setup({
       indent = { enable = true },
       incremental_selection = {
         enable = true,
-        keymaps = {
-          init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>", },
+        keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",},
       },
       textobjects = {
         select = {
           enable = true,
           lookahead = true,
-          keymaps = {
-            ["ia"] = "@parameter.inner", ["af"] = "@function.outer", ["ac"] = "@class.outer", },
-        },
+          keymaps = { ["ia"] = "@parameter.inner", ["af"] = "@function.outer", ["ac"] = "@class.outer", },},
       },
     },
   },
   { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
-vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
-vim.keymap.set("i", "jj", "<Esc>")
 local harpoon = require("harpoon") harpoon:setup()
-for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
-vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
-vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 vim.api.nvim_create_user_command("PySources", function()
   vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
 end, {})
@@ -129,6 +121,11 @@ local function scratch_to_quickfix()
   vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
+vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
+vim.keymap.set("i", "jj", "<Esc>")
+for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 vim.keymap.set("n", "<leader>q", scratch_to_quickfix, {})
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end, {})
 vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end, {})
@@ -136,4 +133,3 @@ vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
 vim.keymap.set("n", "<leader>g", ":find ")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
-
