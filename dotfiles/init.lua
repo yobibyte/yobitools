@@ -70,13 +70,18 @@ end
 
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  -- Add excludes here.
   run_search( "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'")
 end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  -- TODO(yobibyte): add .venv only to cwd search though. Doc search should include .venv.
-  run_search("grep -IEnr --exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' " .. "'" .. opts.args .. "' " .. path)
+  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info'"
+  if not opts.bang then
+    -- cwd search should only look at project files.
+    excludes = excludes .. " --exclude-dir=.venv"
+  end
+  run_search("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path)
 end, { nargs = "+", bang = true })
 
 local function scratch_to_quickfix()
