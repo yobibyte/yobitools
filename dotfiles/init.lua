@@ -7,6 +7,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.o.foldlevelstart = 99
+vim.g.netrw_banner = 0
 vim.opt.path:append("**")
 vim.cmd("syntax off")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -134,4 +135,5 @@ vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch " .. pattern) end end) end, {})
 vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
 vim.keymap.set("n", "<leader>g", ":find ")
+vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 
