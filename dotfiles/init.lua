@@ -70,13 +70,17 @@ end
 
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  -- Add excludes here.
-  run_search( "find " .. vim.fn.shellescape(dir) .. " -name " .. "'*" .. opts.args .. "*'")
+  local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
+  if not opts.bang then
+    excludes = excludes .. " -path '*.venv*' -prune -o"
+    excludes = excludes .. " -path " .. vim.fn.getcwd() .. "/target*" .. " -prune -o"
+  end
+  run_search("find " .. vim.fn.shellescape(dir) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
 end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info'"
+  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
   if not opts.bang then
     -- cwd search should only look at project files.
     excludes = excludes .. " --exclude-dir=.venv"
