@@ -42,16 +42,6 @@ require("lazy").setup({
   { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
 local harpoon = require("harpoon") harpoon:setup()
-vim.api.nvim_create_user_command("PySources", function()
-  vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
-end, {})
-vim.api.nvim_create_user_command("RustSources", function()
-  local registry = os.getenv("CARGO_HOME")
-    or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-  vim.cmd(
-    "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]
-  )
-end, {})
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function() vim.highlight.on_yank() end,
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
@@ -126,10 +116,22 @@ vim.keymap.set("i", "jj", "<Esc>")
 for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-vim.keymap.set("n", "<leader>q", scratch_to_quickfix, {})
-vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end, {})
-vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end, {})
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch " .. pattern) end end) end, {})
-vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end, {})
-vim.keymap.set("n", "<leader>g", ":find ")
+vim.keymap.set("n", "<leader>q", scratch_to_quickfix)
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
+vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end)
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch " .. pattern) end end) end)
+vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end)
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
+vim.keymap.set("n", "<leader>gg", ":find ")
+vim.keymap.set("n", "<leader>gp", 
+  function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end 
+)
+vim.keymap.set("n", "<leader>gr", 
+  function()
+    local registry = os.getenv("CARGO_HOME")
+      or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
+    vim.cmd(
+      "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]
+    )
+  end
+)
