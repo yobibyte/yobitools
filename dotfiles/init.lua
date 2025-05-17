@@ -86,7 +86,7 @@ end, { nargs = "+", bang = true })
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
   -- TODO(yobibyte): add .venv only to cwd search though. Doc search should include .venv.
-  run_search("grep -IEnr --exclude-dir=.git --exclude-dir='*.egg-info' " .. "'" .. opts.args .. "' " .. path)
+  run_search("grep -IEnr --exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' " .. "'" .. opts.args .. "' " .. path)
 end, { nargs = "+", bang = true })
 
 local function scratch_to_quickfix()
