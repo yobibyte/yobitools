@@ -6,7 +6,6 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.o.foldlevelstart = 99
 vim.g.netrw_banner = 0
 vim.opt.path:append("**")
 vim.cmd("syntax off")
@@ -47,8 +46,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
   pattern = "*",
 })
-vim.wo.foldmethod = "expr"
-vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.cmd("colorscheme retrobox")
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("FileType", {
@@ -135,6 +132,12 @@ vim.keymap.set("n", "<leader>gg", ":find ")
 vim.keymap.set("n", "<leader>gp", 
   function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end 
 )
+vim.keymap.set("n", "<leader>/", function()
+  vim.ui.input({ prompt = "> " }, function(pattern)
+    if not pattern or pattern == "" then return end
+    run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
+  end)
+end)
 vim.keymap.set("n", "<leader>gr", 
   function()
     local registry = os.getenv("CARGO_HOME")
