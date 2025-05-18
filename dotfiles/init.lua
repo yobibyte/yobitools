@@ -73,7 +73,7 @@ vim.api.nvim_create_user_command("FileSearch", function(opts)
   local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
   if not opts.bang then
     excludes = excludes .. " -path '*.venv*' -prune -o"
-    excludes = excludes .. " -path " .. vim.fn.getcwd() .. "/target*" .. " -prune -o"
+    excludes = excludes .. " -path '" .. vim.fn.getcwd() .. "/target*'" .. " -prune -o"
   end
   run_search("find " .. vim.fn.shellescape(dir) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
 end, { nargs = "+", bang = true })
