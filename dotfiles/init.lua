@@ -86,6 +86,8 @@ vim.api.nvim_create_user_command("TextSearch", function(opts)
 end, { nargs = "+", bang = true })
 
 local function scratch_to_quickfix()
+  local prev_bufnr = vim.fn.bufnr('#')
+  local orig_name = vim.fn.bufname(prev_bufnr)
   local bufnr = vim.api.nvim_get_current_buf()
   local items = {}
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
@@ -100,13 +102,23 @@ local function scratch_to_quickfix()
           text = text,
         })
       else
-        -- for find results, only fnames
-        table.insert(items, {
-          filename = vim.fn.fnamemodify(line, ":p"),
-          lnum = 1,
-          col = 1,
-          text = "",
-        })
+        local lnum, text = line:match("^(%d+):(.*)$")
+        if lnum and text then
+          table.insert(items, {
+            filename = orig_name,
+            lnum = tonumber(lnum),
+            col = 1,
+            text = text,
+          })
+        else
+          -- for find results, only fnames
+          table.insert(items, {
+            filename = vim.fn.fnamemodify(line, ":p"),
+            lnum = 1,
+            col = 1,
+            text = "",
+          })
+        end
       end
     end
   end
