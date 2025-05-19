@@ -147,3 +147,4 @@ vim.keymap.set("n", "<leader>gr",
     )
   end
 )
+vim.keymap.set("n", "<leader>n", ":set number!<cr>")
