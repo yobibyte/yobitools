@@ -134,10 +134,10 @@ local function scratch_to_quickfix()
     end
   end
 
+  vim.api.nvim_buf_delete(bufnr, { force = true })
   vim.fn.setqflist(items, "r")
   vim.cmd("copen")
   vim.cmd("cc")
-  vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
 vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
