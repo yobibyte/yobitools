@@ -174,3 +174,18 @@ vim.keymap.set("n", "<leader>gr",
   end
 )
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
+
+vim.keymap.set('n', '<leader>bl', function()
+  local qf_list = {}
+  for _, buf in ipairs(vim.fn.getbufinfo()) do
+    if buf.listed == 1 then
+      table.insert(qf_list, {
+        filename = buf.name ~= '' and buf.name or '[No Name]',
+        text = ':' .. buf.bufnr
+      })
+    end
+  end
+  vim.fn.setqflist(qf_list, 'r')
+  vim.cmd('copen')
+end, {})
+
