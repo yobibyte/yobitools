@@ -75,7 +75,7 @@ vim.api.nvim_create_user_command("FileSearch", function(opts)
   run_search("find " .. vim.fn.shellescape(dir) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
 end, { nargs = "+", bang = true })
 
-vim.api.nvim_create_user_command("TextSearch", function(opts)
+vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
   local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
   if not opts.bang then
@@ -83,6 +83,17 @@ vim.api.nvim_create_user_command("TextSearch", function(opts)
     excludes = excludes .. " --exclude-dir=.venv"
   end
   run_search("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path)
+end, { nargs = "+", bang = true })
+
+vim.api.nvim_create_user_command("TextSearch", function(opts)
+  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local excludes = [[--glob '!**/target/**' --glob '!.git/**' --glob '!**/*.egg-info/**' --glob '!**/__pycache__/**']]
+  if not opts.bang then
+    excludes = excludes .. " --glob '!**/.venv/**'"
+  end
+  local cmd = "rg --vimgrep -i -n " .. excludes .. " '" .. opts.args .. "' " .. path
+  run_search(cmd)
+
 end, { nargs = "+", bang = true })
 
 local function scratch_to_quickfix()
@@ -147,7 +158,10 @@ vim.keymap.set("n", "<leader>gp",
 vim.keymap.set("n", "<leader>/", function()
   vim.ui.input({ prompt = "> " }, function(pattern)
     if not pattern or pattern == "" then return end
-    run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
+    -- vanilla grep version
+    -- run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
+    run_search("rg --vimgrep '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
+      
   end)
 end)
 vim.keymap.set("n", "<leader>gr", 
