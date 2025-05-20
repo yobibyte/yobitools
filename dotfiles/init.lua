@@ -161,10 +161,7 @@ vim.keymap.set("n", "<leader>gp",
 vim.keymap.set("n", "<leader>/", function()
   vim.ui.input({ prompt = "> " }, function(pattern)
     if not pattern or pattern == "" then return end
-    -- vanilla grep version
-    -- run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
-    run_search("rg --vimgrep '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
-      
+    run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
   end)
 end)
 vim.keymap.set("n", "<leader>gr", 
