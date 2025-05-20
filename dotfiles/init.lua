@@ -39,6 +39,7 @@ require("lazy").setup({
       },
     },
   },
+  {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
 local harpoon = require("harpoon") harpoon:setup()
@@ -56,136 +57,35 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.cmd("TSDisable highlight")
   end,
 })
--- Mom, can we have telescope? No, we have telescope at home. Telescope at home:
-local function run_search(cmd)
-  local output = vim.fn.systemlist(cmd)
-  vim.cmd("enew")
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, output)
-  vim.bo.buftype = "nofile"
-  vim.bo.bufhidden = "wipe"
-  vim.bo.swapfile = false
-end
-
-vim.api.nvim_create_user_command("FileSearch", function(opts)
-  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
-  if not opts.bang then
-    excludes = excludes .. " -path '*.venv*' -prune -o"
-    excludes = excludes .. " -path '" .. vim.fn.getcwd() .. "/target*'" .. " -prune -o"
-  end
-  run_search("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
-end, { nargs = "+", bang = true })
-
-vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
-  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
-  if not opts.bang then
-    -- cwd search should only look at project files.
-    excludes = excludes .. " --exclude-dir=.venv"
-  end
-  run_search("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path)
-end, { nargs = "+", bang = true })
-
-vim.api.nvim_create_user_command("TextSearch", function(opts)
-  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local excludes = "--glob '!**/target/**' --glob '!.git/**' --glob '!**/*.egg-info/**' --glob '!**/__pycache__/**'"
-  if not opts.bang then
-    excludes = excludes .. " --glob '!**/.venv/**'"
-  else
-    excludes = excludes .. " --no-ignore "
-  end
-  local cmd = "rg --vimgrep -i -n " .. excludes .. " '" .. opts.args .. "' " .. path
-  run_search(cmd)
-
-end, { nargs = "+", bang = true })
-
-local function scratch_to_quickfix()
-  local prev_bufnr = vim.fn.bufnr('#')
-  local orig_name = vim.fn.bufname(prev_bufnr)
-  local bufnr = vim.api.nvim_get_current_buf()
-  local items = {}
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-    if line ~= "" then
-      local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
-      if filename and lnum then
-        --for grep filename:line:text
-        table.insert(items, {
-          filename = vim.fn.fnamemodify(filename, ":p"),
-          lnum = tonumber(lnum),
-          col = 1,
-          text = text,
-        })
-      else
-        local lnum, text = line:match("^(%d+):(.*)$")
-        if lnum and text then
-          table.insert(items, {
-            filename = orig_name,
-            lnum = tonumber(lnum),
-            col = 1,
-            text = text,
-          })
-        else
-          -- for find results, only fnames
-          table.insert(items, {
-            filename = vim.fn.fnamemodify(line, ":p"),
-            lnum = 1,
-            col = 1,
-            text = "",
-          })
-        end
-      end
-    end
-  end
-
-  vim.api.nvim_buf_delete(bufnr, { force = true })
-  vim.fn.setqflist(items, "r")
-  vim.cmd("copen")
-  vim.cmd("cc")
-end
 
 vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
 vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-vim.keymap.set("n", "<leader>q", scratch_to_quickfix)
-vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
-vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end)
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch " .. pattern) end end) end)
-vim.keymap.set("n", "<leader>lg", function() vim.ui.input({ prompt = "> " }, function(pattern) if pattern then vim.cmd("TextSearch! " .. pattern) end end) end)
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>gg", ":find ")
 vim.keymap.set("n", "<leader>gp", 
   function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end 
 )
-vim.keymap.set("n", "<leader>/", function()
-  vim.ui.input({ prompt = "> " }, function(pattern)
-    if not pattern or pattern == "" then return end
-    run_search("grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
-  end)
-end)
 vim.keymap.set("n", "<leader>gr", 
   function()
-    local registry = os.getenv("CARGO_HOME")
-      or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-    vim.cmd(
-      "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]
-    )
+    local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
+    vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1])
   end
 )
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
-
-vim.keymap.set('n', '<leader>bl', function()
-  local qf_list = {}
-  for _, buf in ipairs(vim.fn.getbufinfo()) do
-    if buf.listed == 1 then
-      table.insert(qf_list, {
-        filename = buf.name ~= '' and buf.name or '[No Name]',
-        text = ':' .. buf.bufnr
-      })
-    end
-  end
-  vim.fn.setqflist(qf_list, 'r')
-  vim.cmd('copen')
-end, {})
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers)
+vim.keymap.set('n', '<leader>sf',      require('telescope.builtin').find_files)
+vim.keymap.set('n', '<leader>sg',      require('telescope.builtin').live_grep)
+vim.keymap.set('n', '<leader>sr',      require('telescope.builtin').resume, {})
+vim.keymap.set('n', '<leader>?',       require('telescope.builtin').oldfiles)
+vim.keymap.set('n', '<leader>/',       require('telescope.builtin').current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
+vim.keymap.set('n', '<leader>df', function() require('telescope.builtin').find_files({cwd = vim.fn.expand('%:p:h'), no_ignore=true}) end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ds', function() require('telescope.builtin').live_grep({cwd = vim.fn.expand('%:p:h'), additional_args = function() return { "--hidden", "--no-ignore" } end}) end, { noremap = true, silent = true })
+vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
+vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
+vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 
