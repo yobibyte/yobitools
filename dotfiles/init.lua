@@ -8,6 +8,7 @@ vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.g.netrw_banner = 0
 vim.opt.path:append("**")
+vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*",}
 vim.cmd("syntax off")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -66,13 +67,13 @@ local function run_search(cmd)
 end
 
 vim.api.nvim_create_user_command("FileSearch", function(opts)
-  local dir = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
   local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
   if not opts.bang then
     excludes = excludes .. " -path '*.venv*' -prune -o"
     excludes = excludes .. " -path '" .. vim.fn.getcwd() .. "/target*'" .. " -prune -o"
   end
-  run_search("find " .. vim.fn.shellescape(dir) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
+  run_search("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print")
 end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
@@ -87,9 +88,11 @@ end, { nargs = "+", bang = true })
 
 vim.api.nvim_create_user_command("TextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
-  local excludes = [[--glob '!**/target/**' --glob '!.git/**' --glob '!**/*.egg-info/**' --glob '!**/__pycache__/**']]
+  local excludes = "--glob '!**/target/**' --glob '!.git/**' --glob '!**/*.egg-info/**' --glob '!**/__pycache__/**'"
   if not opts.bang then
     excludes = excludes .. " --glob '!**/.venv/**'"
+  else
+    excludes = excludes .. " --no-ignore "
   end
   local cmd = "rg --vimgrep -i -n " .. excludes .. " '" .. opts.args .. "' " .. path
   run_search(cmd)
