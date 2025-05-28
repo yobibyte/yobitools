@@ -17,7 +17,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   "yobibyte/vim-fugitive", "yobibyte/vim-sleuth", "yobibyte/Comment.nvim",
-  { "yobibyte/harpoon", branch = "harpoon2", dependencies = { "yobibyte/plenary.nvim" }, },
   { "yobibyte/nvim-treesitter",
     dependencies = { "yobibyte/nvim-treesitter-textobjects" },
     build = ":TSUpdate",
@@ -42,7 +41,6 @@ require("lazy").setup({
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
   { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
-local harpoon = require("harpoon") harpoon:setup()
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function() vim.highlight.on_yank() end,
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
@@ -60,9 +58,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
-for i = 1, 9 do vim.keymap.set("n", string.format("<leader>%d", i), function() harpoon:list():select(i) end) end
-vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
-vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>gg", ":find ")
 vim.keymap.set("n", "<leader>gp", 
