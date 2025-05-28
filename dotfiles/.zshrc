@@ -16,7 +16,7 @@ bindkey "\033[4~" end-of-line
 PS1='%F{blue}%~ %(?.%F{green}.%F{red})%#%f '
 
 alias open='xdg-open'
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cabal/bin:/home/yobibyte/.cargo/bin:$HOME/src/zig:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cabal/bin:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f:$PATH
 
 kitty + complete setup zsh | source /dev/stdin
 
@@ -66,3 +66,4 @@ alias save="monolith"
 # esc-M in w3m to add a link here
 alias agi='bash ~/src/google_gemma-3-4b-it-Q6_K.llamafile'
 alias pydocs='vim /home/yobibyte/dev/docs/cpython'
+# alias zig='~/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f/zig'
