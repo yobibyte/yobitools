@@ -19,21 +19,15 @@ require("lazy").setup({
   "yobibyte/vim-fugitive", "yobibyte/vim-sleuth", "yobibyte/Comment.nvim",
   { "yobibyte/nvim-treesitter",
     dependencies = { "yobibyte/nvim-treesitter-textobjects" },
-    build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
+    build = ":TSUpdate", main = "nvim-treesitter.configs",
     opts = {
       ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" },
-      auto_install = true,
-      sync_install = false,
-      indent = { enable = true },
-      incremental_selection = {
-        enable = true,
+      auto_install = true, sync_install = false, indent = { enable = true },
+      incremental_selection = { enable = true,
         keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",},
       },
       textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
+        select = { enable = true, lookahead = true,
           keymaps = { ["ia"] = "@parameter.inner", ["af"] = "@function.outer", ["ac"] = "@class.outer", },},
       },
     },
@@ -42,9 +36,7 @@ require("lazy").setup({
   { "yobibyte/neogen", dependencies = "yobibyte/nvim-treesitter", config = true, languages = { python = { template = { annotation_convention = "google_docstrings" } }, }, },
 }, {})
 vim.api.nvim_create_autocmd("TextYankPost", {
-  callback = function() vim.highlight.on_yank() end,
-  group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
-  pattern = "*",
+  callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*",
 })
 vim.cmd("colorscheme retrobox")
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
@@ -55,14 +47,11 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.cmd("TSDisable highlight")
   end,
 })
-
 vim.keymap.set( "n", "<leader>cc", ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>gg", ":find ")
-vim.keymap.set("n", "<leader>gp", 
-  function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end 
-)
+vim.keymap.set("n", "<leader>gp", function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end )
 vim.keymap.set("n", "<leader>gr", 
   function()
     local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
