@@ -26,10 +26,6 @@ require("lazy").setup({
       incremental_selection = { enable = true,
         keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",},
       },
-      textobjects = {
-        select = { enable = true, lookahead = true,
-          keymaps = { ["ia"] = "@parameter.inner", ["af"] = "@function.outer", ["ac"] = "@class.outer", },},
-      },
     },
   },
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
