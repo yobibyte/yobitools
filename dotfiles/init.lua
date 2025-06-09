@@ -75,3 +75,11 @@ vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set('v', '<C-j>', ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set('v', '<C-k>', ":move '<-2<CR>gv", { noremap = true, silent = true })
 
+-- linting
+vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
+vim.keymap.set("n", "<leader>br", function()
+  local output = vim.fn.system({ "ruff", "check", vim.fn.expand("%") })
+  vim.cmd("vnew")
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(output, "\n"))
+  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false
+end, {})

@@ -47,7 +47,7 @@ archive() {
 }
 
 export YDB_DIR=~/.ydb
-alias m='neomutt'
+alias m='cd $HOME/Downloads;neomutt'
 alias sm='mw -Y'
 alias c='calcurse'
 alias l='vim ~/sync/links.md'
