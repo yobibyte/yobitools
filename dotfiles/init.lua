@@ -6,7 +6,7 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.cmd("syntax off")
+vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, }) end
 vim.opt.rtp:prepend(lazypath)
@@ -15,7 +15,6 @@ require("lazy").setup({
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
 }, {})
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
-vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" }) vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = function() vim.cmd("TSEnable highlight") vim.cmd("TSDisable highlight") end, })
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", "<C-j>",           ":move .+1<CR>", {})
 vim.keymap.set("n", "<C-k>",           ":move .-2<CR>", {})
