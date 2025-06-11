@@ -12,8 +12,7 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, }) end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  "yobibyte/vim-fugitive", {"yobibyte/neogen", config = true,},
-  {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
+  "yobibyte/vim-fugitive", {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
 }, {})
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.keymap.set("i", "jj", "<Esc>")
@@ -32,7 +31,6 @@ vim.keymap.set('n', '<leader>sb',      require('telescope.builtin').current_buff
 vim.keymap.set('n', '<leader>sc',      function() local fpath = vim.fn.expand("%:p") if fpath ~= "" then require('telescope.builtin').live_grep({ search_dirs = { fpath } }) end end)
 vim.keymap.set('n', '<leader>df',      function() require('telescope.builtin').find_files({cwd = vim.fn.expand('%:p:h'), no_ignore=true}) end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ds',      function() require('telescope.builtin').live_grep({cwd = vim.fn.expand('%:p:h'), additional_args = function() return { "--hidden", "--no-ignore" } end}) end, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>cc",      ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>g', ':Git<CR>', {})
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
 vim.keymap.set("n", "<leader>gp", function() vim.cmd( "edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end )
