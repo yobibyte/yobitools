@@ -12,7 +12,6 @@ if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   "yobibyte/vim-fugitive", {"yobibyte/neogen", config = true,},
-  {"yobibyte/nvim-treesitter", build = ":TSUpdate", main = "nvim-treesitter.configs", opts = { ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" }, auto_install = true, sync_install = false, indent = { enable = true }, incremental_selection = { enable = true, keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",},},},},
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
 }, {})
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
