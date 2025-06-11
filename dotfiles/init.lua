@@ -11,7 +11,7 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, }) end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  "yobibyte/vim-fugitive", "yobibyte/vim-sleuth",
+  "yobibyte/vim-fugitive", 
   {"yobibyte/nvim-treesitter", build = ":TSUpdate", main = "nvim-treesitter.configs", opts = { ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" }, auto_install = true, sync_install = false, indent = { enable = true },
              incremental_selection = { enable = true, keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",}, }, }, },
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
@@ -64,3 +64,32 @@ vim.keymap.set({ "n", "x" }, "<leader>c", function()
     if all_commented then vim.fn.setline(i, uncommented) else vim.fn.setline(i, prefix .. " " .. line) end
   end
 end, {})
+
+vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
+    local space_count = 0 local tab_count = 0 local min_indent = nil
+    for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do
+      if not line:match("^%s*$") then 
+        local indent = line:match("^(%s+)")
+        if indent then
+          if indent:find("\t") then
+            tab_count = tab_count + 1
+          else
+            space_count = space_count + 1
+            local len = #indent
+            if not min_indent or len < min_indent then min_indent = len end
+          end
+        end
+      end
+    end
+    if tab_count > space_count then
+      vim.opt_local.expandtab = false
+    else
+      min_indent = min_indent or 2
+      vim.opt_local.expandtab = true
+      vim.opt_local.shiftwidth = min_indent
+      vim.opt_local.tabstop = min_indent
+      vim.opt_local.softtabstop = min_indent
+    end
+  end,
+})
+
