@@ -6,7 +6,8 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+vim.cmd("syntax off") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+vim.api.nvim_create_autocmd("VimEnter", { callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end, })
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, }) end
 vim.opt.rtp:prepend(lazypath)
