@@ -9,11 +9,7 @@ vim.o.timeoutlen = 300
 vim.cmd("syntax off")
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    if vim.treesitter and vim.treesitter.stop then
-      vim.treesitter.stop()
-    end
-  end,
+  callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end,
 })
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -23,13 +19,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  "yobibyte/vim-fugitive",
-  {
-    "yobibyte/telescope.nvim",
+  { "yobibyte/telescope.nvim",
     branch = "0.1.x",
     dependencies = { "yobibyte/plenary.nvim", { "yobibyte/telescope-fzf-native.nvim", build = "make", cond = function() return vim.fn.executable("make") == 1 end, }, },
-  },
-}, {})
+  }, }, {})
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function() vim.highlight.on_yank() end,
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
@@ -52,12 +45,7 @@ vim.keymap.set("n", "<leader>sc", function()
   local fpath = vim.fn.expand("%:p")
   if fpath ~= "" then require("telescope.builtin").live_grep({ search_dirs = { fpath } }) end
 end)
-vim.keymap.set("n", "<leader>df", function()
-  require("telescope.builtin").find_files({
-    cwd = vim.fn.expand("%:p:h"),
-    no_ignore = true,
-  })
-end, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>df", function() require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), no_ignore = true, }) end, { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>ds", function()
   require("telescope.builtin").live_grep({
     cwd = vim.fn.expand("%:p:h"),
@@ -66,8 +54,6 @@ vim.keymap.set("n", "<leader>ds", function()
     end,
   })
 end, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>g", ":Git<CR>", {})
-vim.keymap.set("n", "<leader>jg", ":vertical Git<CR>", {})
 vim.keymap.set("n", "<leader>gp", function()
   vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
 end)
