@@ -34,6 +34,15 @@ vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set( "v", "<C-j>", ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set( "v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
+local function scratch()
+  vim.bo.buftype = "nofile"
+  vim.bo.bufhidden = "wipe"
+  vim.bo.swapfile = false
+end
+vim.keymap.set("n", "<leader>gl", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gd", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gb", function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gs", function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").buffers)
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files)
@@ -68,9 +77,7 @@ vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function()
   vim.cmd("vnew")
   vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n"))
-  vim.bo.buftype = "nofile"
-  vim.bo.bufhidden = "wipe"
-  vim.bo.swapfile = false
+  scratch()
 end, {})
 vim.keymap.set({ "n", "x" }, "<leader>c", function()
   local cs = vim.bo.commentstring:match("^(.*)%%s")
