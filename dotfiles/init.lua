@@ -11,7 +11,7 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, }) end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  "yobibyte/vim-fugitive", "yobibyte/vim-sleuth", "yobibyte/Comment.nvim",
+  "yobibyte/vim-fugitive", "yobibyte/vim-sleuth",
   {"yobibyte/nvim-treesitter", build = ":TSUpdate", main = "nvim-treesitter.configs", opts = { ensure_installed = { "c", "cpp", "python", "rust", "bash", "zig" }, auto_install = true, sync_install = false, indent = { enable = true },
              incremental_selection = { enable = true, keymaps = {init_selection = "<c-space>", node_incremental = "<c-space>", node_decremental = "<M-space>",}, }, }, },
   {'yobibyte/telescope.nvim', branch = '0.1.x', dependencies = { 'yobibyte/plenary.nvim', {'yobibyte/telescope-fzf-native.nvim', build = 'make', cond = function() return vim.fn.executable 'make' == 1 end,},},},
@@ -32,9 +32,9 @@ vim.keymap.set('n', '<leader>sg',      require('telescope.builtin').live_grep)
 vim.keymap.set('n', '<leader>sr',      require('telescope.builtin').resume, {})
 vim.keymap.set('n', '<leader>so',      require('telescope.builtin').oldfiles)
 vim.keymap.set('n', '<leader>sb',      require('telescope.builtin').current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>sc',      function() local fpath = vim.fn.expand("%:p") if fpath ~= "" then require('telescope.builtin').live_grep({ search_dirs = { fpath } }) end end)
 vim.keymap.set('n', '<leader>df',      function() require('telescope.builtin').find_files({cwd = vim.fn.expand('%:p:h'), no_ignore=true}) end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>ds',      function() require('telescope.builtin').live_grep({cwd = vim.fn.expand('%:p:h'), additional_args = function() return { "--hidden", "--no-ignore" } end}) end, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>sc',      function() local fpath = vim.fn.expand("%:p") if fpath ~= "" then require('telescope.builtin').live_grep({ search_dirs = { fpath } }) end end)
 vim.keymap.set("n", "<leader>cc",      ":lua require('neogen').generate()<CR>", { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>g', ':Git<CR>', {})
 vim.keymap.set('n', '<leader>jg', ':vertical Git<CR>', {})
@@ -42,3 +42,25 @@ vim.keymap.set("n", "<leader>gp", function() vim.cmd( "edit " .. vim.fn.system("
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd("edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n")) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end, {})
+vim.keymap.set({ "n", "x" }, "<leader>c", function()
+  local cs = vim.bo.commentstring:match("^(.*)%%s")
+  if not cs or cs == "" then return end
+  local s_row, e_row = vim.fn.line("."), vim.fn.line(".")
+  if vim.fn.mode() ~= "n" then
+    s_row, e_row = vim.fn.line("v"), vim.fn.line(".")
+    if s_row > e_row then s_row, e_row = e_row, s_row end
+  end
+  local lines = {}
+  local all_commented = true
+  local prefix = vim.trim(cs)
+  for i = s_row, e_row do
+    local line = vim.fn.getline(i)
+    local uncommented = line:gsub("^" .. vim.pesc(prefix) .. "%s?", "", 1)
+    if uncommented == line then all_commented = false end
+    table.insert(lines, { i, line, uncommented })
+  end
+  for _, entry in ipairs(lines) do
+    local i, line, uncommented = unpack(entry)
+    if all_commented then vim.fn.setline(i, uncommented) else vim.fn.setline(i, prefix .. " " .. line) end
+  end
+end, {})
