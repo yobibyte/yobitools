@@ -6,21 +6,15 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
-vim.cmd("syntax off")
-vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end,
-})
+vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+vim.api.nvim_create_autocmd("VimEnter", { callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end, })
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath,
-  })
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
 end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  { "yobibyte/telescope.nvim",
-    branch = "0.1.x",
+  { "yobibyte/telescope.nvim", branch = "0.1.x",
     dependencies = { "yobibyte/plenary.nvim", { "yobibyte/telescope-fzf-native.nvim", build = "make", cond = function() return vim.fn.executable("make") == 1 end, }, },
   }, }, {})
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -28,17 +22,14 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
   pattern = "*",
 })
+local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
+
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
 vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set( "v", "<C-j>", ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set( "v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
-local function scratch()
-  vim.bo.buftype = "nofile"
-  vim.bo.bufhidden = "wipe"
-  vim.bo.swapfile = false
-end
 vim.keymap.set("n", "<leader>gl", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gd", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gb", function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
@@ -67,11 +58,8 @@ vim.keymap.set("n", "<leader>gp", function()
   vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
 end)
 vim.keymap.set("n", "<leader>gr", function()
-  local registry = os.getenv("CARGO_HOME")
-    or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-  vim.cmd(
-    "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]
-  )
+  local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
+  vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1])
 end)
 vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function()
