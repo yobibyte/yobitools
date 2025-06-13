@@ -24,6 +24,7 @@ vim.keymap.set( "v", "<C-j>", ":move '>+1<CR>gv", { noremap = true, silent = tru
 vim.keymap.set( "v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
+local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 vim.keymap.set("n", "<leader>gl", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gd", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gb", function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
@@ -40,7 +41,6 @@ vim.keymap.set("n", "<leader>ds", function() require("telescope.builtin").live_g
 vim.keymap.set("n", "<leader>gp", function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
-local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 vim.keymap.set("n", "<leader>br", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n")) scratch() end, {})
 vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
