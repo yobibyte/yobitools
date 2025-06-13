@@ -8,12 +8,11 @@ vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("VimEnter", { callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end, })
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
+local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start"
+if not vim.loop.fs_stat(pluginpath) then
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/telescope.nvim", "--branch=0.1.x", pluginpath, })
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/plenary.nvim", pluginpath, })
 end
-vim.opt.rtp:prepend(lazypath)
-require("lazy").setup({ { "yobibyte/telescope.nvim", branch = "0.1.x", dependencies = { "yobibyte/plenary.nvim", { "yobibyte/telescope-fzf-native.nvim", build = "make", cond = function() return vim.fn.executable("make") == 1 end, }, }, }, }, {})
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", ";;", ":w<cr>")
@@ -28,74 +27,21 @@ vim.keymap.set("n", "<leader>gl", function() vim.cmd("vnew") vim.api.nvim_buf_se
 vim.keymap.set("n", "<leader>gd", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gb", function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gs", function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader><space>", function() require("telescope.builtin").buffers { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } end)
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
-vim.keymap.set("n", "<leader><space>", function()
-  require("telescope.builtin").buffers {
-    previewer = false,
-    layout_strategy = "center",
-    layout_config = { height = 0.4, },
-  }
-end)
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files)
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep)
 vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, {})
 vim.keymap.set("n", "<leader>so", require("telescope.builtin").oldfiles)
 vim.keymap.set( "n", "<leader>sb", require("telescope.builtin").current_buffer_fuzzy_find, {})
-vim.keymap.set("n", "<leader>sc", function()
-  local fpath = vim.fn.expand("%:p")
-  if fpath ~= "" then require("telescope.builtin").live_grep({ search_dirs = { fpath } }) end
-end)
+vim.keymap.set("n", "<leader>sc", function() local fpath = vim.fn.expand("%:p") if fpath ~= "" then require("telescope.builtin").live_grep({ search_dirs = { fpath } }) end end)
 vim.keymap.set("n", "<leader>df", function() require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), no_ignore = true, }) end, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>ds", function()
-  require("telescope.builtin").live_grep({
-    cwd = vim.fn.expand("%:p:h"),
-    additional_args = function() return { "--hidden", "--no-ignore" } end,
-  })
-end, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>gp", function()
-  vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.")
-end)
-vim.keymap.set("n", "<leader>gr", function()
-  local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src"
-  vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1])
-end)
+vim.keymap.set("n", "<leader>ds", function() require("telescope.builtin").live_grep({ cwd = vim.fn.expand("%:p:h"), additional_args = function() return { "--hidden", "--no-ignore" } end, }) end, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gp", function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
+vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>bb", ":!black %<cr>")
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
-vim.keymap.set("n", "<leader>br", function()
-  vim.cmd("vnew")
-  vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n"))
-  scratch()
-end, {})
-vim.keymap.set({ "n", "x" }, "<leader>c", function()
-  local cs = vim.bo.commentstring:match("^(.*)%%s")
-  if not cs or cs == "" then return end
-  local s_row, e_row = vim.fn.line("."), vim.fn.line(".")
-  if vim.fn.mode() ~= "n" then
-    s_row, e_row = vim.fn.line("v"), vim.fn.line(".")
-    if s_row > e_row then
-      s_row, e_row = e_row, s_row
-    end
-  end
-  local lines = {}
-  local all_commented = true
-  local prefix = vim.trim(cs)
-  for i = s_row, e_row do
-    local line = vim.fn.getline(i)
-    local uncommented = line:gsub("^" .. vim.pesc(prefix) .. "%s?", "", 1)
-    if uncommented == line then
-      all_commented = false
-    end
-    table.insert(lines, { i, line, uncommented })
-  end
-  for _, entry in ipairs(lines) do
-    local i, line, uncommented = unpack(entry)
-    if all_commented then
-      vim.fn.setline(i, uncommented)
-    else
-      vim.fn.setline(i, prefix .. " " .. line)
-    end
-  end
-end, {})
+vim.keymap.set("n", "<leader>br", function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n")) scratch() end, {})
 vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
     local space_count = 0
