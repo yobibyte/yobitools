@@ -29,7 +29,13 @@ vim.keymap.set("n", "<leader>gd", function() vim.cmd("vnew") vim.api.nvim_buf_se
 vim.keymap.set("n", "<leader>gb", function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gs", function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
-vim.keymap.set("n", "<leader><space>", require("telescope.builtin").buffers)
+vim.keymap.set("n", "<leader><space>", function()
+  require("telescope.builtin").buffers {
+    previewer = false,
+    layout_strategy = "center",
+    layout_config = { height = 0.4, },
+  }
+end)
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files)
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep)
 vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, {})
