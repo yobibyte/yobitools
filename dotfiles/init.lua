@@ -8,10 +8,10 @@ vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("VimEnter", { callback = function() if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end, })
-local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start"
+local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start/"
 if not vim.loop.fs_stat(pluginpath) then
-  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/telescope.nvim", "--branch=0.1.x", pluginpath, })
-  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/plenary.nvim", pluginpath, })
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/telescope.nvim", "--branch=0.1.x", pluginpath .. "telescope.nvim", })
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/plenary.nvim", pluginpath .. "plenary.nvim", })
 end
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.keymap.set("i", "jj", "<Esc>")
