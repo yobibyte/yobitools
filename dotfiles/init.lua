@@ -15,9 +15,6 @@ vim.cmd("syntax off")
 vim.cmd("colorscheme retrobox") 
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 
-local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
-local function extcmd(cmd) vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system(cmd), "\n")) scratch() end
-
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
     local space_count, tab_count = 0, 0
@@ -58,29 +55,14 @@ local function scratch_to_quickfix()
       local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
       if filename and lnum then
         --for grep filename:line:text
-        table.insert(items, {
-          filename = vim.fn.fnamemodify(filename, ":p"),
-          lnum = tonumber(lnum),
-          col = 1,
-          text = text,
-        })
+        table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), col = 1, text = text, })
       else
         local lnum, text = line:match("^(%d+):(.*)$")
         if lnum and text then
-          table.insert(items, {
-            filename = orig_name,
-            lnum = tonumber(lnum),
-            col = 1,
-            text = text,
-          })
+          table.insert(items, { filename = orig_name, lnum = tonumber(lnum), col = 1, text = text, })
         else
           -- for find results, only fnames
-          table.insert(items, {
-            filename = vim.fn.fnamemodify(line, ":p"),
-            lnum = 1,
-            col = 1,
-            text = "",
-          })
+          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, col = 1, text = "", })
         end
       end
     end
@@ -92,35 +74,37 @@ local function scratch_to_quickfix()
   vim.cmd("cc")
 end
 
+local function extcmd(cmd, use_list, quickfix) 
+  if use_list then
+    output = vim.fn.systemlist(cmd)
+    if not output or #output == 0 then return end
+  else
+    output = vim.fn.system(cmd)
+    if not output or output == "" then return end
+    output = vim.split(output, "\n")
+  end
+  vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output)
+  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false
+  if quickfix then scratch_to_quickfix() end
+end
+
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
   if vim.bo.filetype == "netrw" then
       path = vim.b.netrw_curdir
   else
       path = vim.fn.getcwd()
-      excludes = excludes .. " -path '*.venv*' -prune -o"
-      excludes = excludes .. " -path '" .. vim.fn.getcwd() .. "/target*'" .. " -prune -o"
+      excludes = excludes .. " -path '*/.venv*' -prune -o" .. " -path '" .. path .. "/target*'" .. " -prune -o"
   end
-  cmd = "find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print"
-  vim.cmd("enew")
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
-  scratch()
-  scratch_to_quickfix()
+  extcmd("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print", true, true)
 end, { nargs = "+", })
 
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
   local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
   local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
-  if vim.bo.filetype == "netrw" then
-      path = vim.b.netrw_curdir
-  else
-    excludes = excludes .. " --exclude-dir=.venv"
+  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else excludes = excludes .. " --exclude-dir=.venv"
   end
-  cmd = "grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path
-  vim.cmd("enew")
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
-  scratch()
-  scratch_to_quickfix()
+  extcmd("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path, true, true)
 end, { nargs = "+"})
 
 vim.keymap.set("i", "jj", "<Esc>")
@@ -156,9 +140,6 @@ vim.keymap.set("n", "<leader>br",function() extcmd({ "ruff", "check", vim.fn.exp
 vim.keymap.set("n", "<leader>ss", function()
   vim.ui.input({ prompt = "> " }, function(pattern)
     if not pattern or pattern == "" then return end
-    cmd = "grep -in '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))
-    vim.cmd("vnew")
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
-    scratch()
+    extcmd("grep -in '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false)
   end)
 end)
