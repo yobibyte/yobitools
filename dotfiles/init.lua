@@ -87,7 +87,7 @@ vim.api.nvim_create_user_command("FileSearch", function(opts)
 end, { nargs = "+", })
 
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
-  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local path = vim.fn.getcwd()
   local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else excludes = excludes .. " --exclude-dir=.venv" end
   extcmd("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path, true, true)
