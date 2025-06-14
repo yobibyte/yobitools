@@ -89,3 +89,8 @@ vim.keymap.set("n", "<leader>sg", function()
   end
   require("telescope.builtin").live_grep(config)
 end)
+vim.keymap.set("n", "<leader>o",  function() vim.cmd.edit(vim.fn.fnameescape(vim.fn.trim(vim.fn.getreg("+")))) end)
+vim.keymap.set("n", "<C-j>", ":move .+1<CR>")
+vim.keymap.set("n", "<C-k>", ":move .-2<CR>")
+vim.keymap.set("v", "<C-j>", ":move '>+1<CR>gv")
+vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv")

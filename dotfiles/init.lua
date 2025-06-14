@@ -11,7 +11,7 @@ vim.o.wildignorecase = true
 vim.g.netrw_banner = 0
 vim.opt.path:append("**")
 vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*", "*/__pycache__/*"}
-vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
     local space_count, tab_count, min_indent = 0, 0, 8
@@ -26,16 +26,10 @@ vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
     end end end
     vim.opt_local.expandtab = false
     if tab_count <= space_count then
-      vim.opt_local.expandtab = true
-      vim.opt_local.shiftwidth = min_indent
-      vim.opt_local.tabstop = min_indent
-      vim.opt_local.softtabstop = min_indent
+      vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent
 end end, })
-
 local function scratch_to_quickfix()
-  local prev_bufnr = vim.fn.bufnr('#')
-  local orig_name = vim.fn.bufname(prev_bufnr)
-  local bufnr = vim.api.nvim_get_current_buf()
+  local bufnr = vim.api.nvim_get_current_buf() 
   local items = {}
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
     if line ~= "" then
@@ -45,7 +39,7 @@ local function scratch_to_quickfix()
       else
         local lnum, text = line:match("^(%d+):(.*)$")
         if lnum and text then
-          table.insert(items, { filename = orig_name, lnum = tonumber(lnum), text = text, }) -- for current buffer grep
+          table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
         else
           table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, text = "", }) -- for find results, only fnames
   end end end end
@@ -54,14 +48,8 @@ local function scratch_to_quickfix()
   vim.cmd("copen | cc")
 end
 local function extcmd(cmd, use_list, quickfix) 
-  if use_list then
-    output = vim.fn.systemlist(cmd)
-    if not output or #output == 0 then return end
-  else
-    output = vim.fn.system(cmd)
-    if not output or output == "" then return end
-    output = vim.split(output, "\n")
-  end
+  if use_list then output = vim.fn.systemlist(cmd) else output = vim.fn.system(vim.split(output, "\n")) end
+  if not output or #output == 0 then return end
   vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output)
   vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false
   if quickfix then scratch_to_quickfix() end
@@ -93,15 +81,10 @@ vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<C-q>", ":cclose<cr>")
 vim.keymap.set("n", "<leader>n", ":bn<cr>")
 vim.keymap.set("n", "<leader>p", ":bp<cr>")
-vim.keymap.set("n", "<C-j>", ":move .+1<CR>")
-vim.keymap.set("n", "<C-k>", ":move .-2<CR>")
-vim.keymap.set("v", "<C-j>", ":move '>+1<CR>gv")
-vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>so",":browse oldfiles<cr>")
 vim.keymap.set("n", "<leader>x",  scratch_to_quickfix)
-vim.keymap.set("n", "<leader>o",  function() vim.cmd.edit(vim.fn.fnameescape(vim.fn.trim(vim.fn.getreg("+")))) end)
 vim.keymap.set("n", "<leader>gl", function() extcmd({"git", "log"}) end)
 vim.keymap.set("n", "<leader>gd", function() extcmd({"git", "diff"}) end)
 vim.keymap.set("n", "<leader>gb", function() extcmd({"git", "blame", vim.fn.expand("%")}) end)
