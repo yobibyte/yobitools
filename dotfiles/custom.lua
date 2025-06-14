@@ -57,49 +57,6 @@ vim.api.nvim_create_user_command("TextSearch", function(opts)
 
 end, { nargs = "+", bang = true })
 
-local function scratch_to_quickfix()
-  local prev_bufnr = vim.fn.bufnr('#')
-  local orig_name = vim.fn.bufname(prev_bufnr)
-  local bufnr = vim.api.nvim_get_current_buf()
-  local items = {}
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-    if line ~= "" then
-      local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
-      if filename and lnum then
-        --for grep filename:line:text
-        table.insert(items, {
-          filename = vim.fn.fnamemodify(filename, ":p"),
-          lnum = tonumber(lnum),
-          col = 1,
-          text = text,
-        })
-      else
-        local lnum, text = line:match("^(%d+):(.*)$")
-        if lnum and text then
-          table.insert(items, {
-            filename = orig_name,
-            lnum = tonumber(lnum),
-            col = 1,
-            text = text,
-          })
-        else
-          -- for find results, only fnames
-          table.insert(items, {
-            filename = vim.fn.fnamemodify(line, ":p"),
-            lnum = 1,
-            col = 1,
-            text = "",
-          })
-        end
-      end
-    end
-  end
-
-  vim.api.nvim_buf_delete(bufnr, { force = true })
-  vim.fn.setqflist(items, "r")
-  vim.cmd("copen")
-  vim.cmd("cc")
-end
 vim.keymap.set("n", "<leader>q", scratch_to_quickfix)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
 vim.keymap.set("n", "<leader>lf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch! " .. name) end end) end)

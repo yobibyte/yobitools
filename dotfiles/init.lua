@@ -26,12 +26,14 @@ vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader><space>", ":b ")
 vim.keymap.set("n", "<C-n>", ":bn<cr>", {})
 vim.keymap.set("n", "<C-p>", ":bp<cr>", {})
+vim.keymap.set("n", "<leader>n", ":cn<cr>")
+vim.keymap.set("n", "<leader>p", ":cp<cr>")
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
 vim.keymap.set("n", "<C-k>", ":move .-2<CR>", {})
 vim.keymap.set("v", "<C-j>", ":move '>+1<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
-vim.keymap.set("n", "<leader>n", ":set number!<cr>")
+vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>so",":browse oldfiles<cr>")
 vim.keymap.set("n", "<leader>o",       function() local file = vim.fn.getreg('+') vim.cmd.edit(vim.fn.fnameescape(vim.fn.trim(file))) end, {})
 vim.keymap.set("n", "<leader>gl",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
@@ -51,7 +53,6 @@ vim.keymap.set("n", "<leader>sg", function()
   end
   require("telescope.builtin").live_grep(config)
 end)
-vim.keymap.set("n", "<leader>sb",      function() require("telescope.builtin").live_grep( { search_dirs = { vim.fn.expand("%:p")  }}) end )
 vim.keymap.set("n", "<leader>gp",      function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
 vim.keymap.set("n", "<leader>gr",      function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>bb",      ":!black %<cr>")
@@ -85,3 +86,57 @@ vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
     end
   end,
 })
+local function scratch_to_quickfix()
+  local prev_bufnr = vim.fn.bufnr('#')
+  local orig_name = vim.fn.bufname(prev_bufnr)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local items = {}
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+    if line ~= "" then
+      local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
+      if filename and lnum then
+        --for grep filename:line:text
+        table.insert(items, {
+          filename = vim.fn.fnamemodify(filename, ":p"),
+          lnum = tonumber(lnum),
+          col = 1,
+          text = text,
+        })
+      else
+        local lnum, text = line:match("^(%d+):(.*)$")
+        if lnum and text then
+          table.insert(items, {
+            filename = orig_name,
+            lnum = tonumber(lnum),
+            col = 1,
+            text = text,
+          })
+        else
+          -- for find results, only fnames
+          table.insert(items, {
+            filename = vim.fn.fnamemodify(line, ":p"),
+            lnum = 1,
+            col = 1,
+            text = "",
+          })
+        end
+      end
+    end
+  end
+
+  vim.api.nvim_buf_delete(bufnr, { force = true })
+  vim.fn.setqflist(items, "r")
+  vim.cmd("copen")
+  vim.cmd("cc")
+end
+vim.keymap.set("n", "<leader>ss", function()
+  vim.ui.input({ prompt = "> " }, function(pattern)
+    if not pattern or pattern == "" then return end
+    cmd = "grep -n '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))
+    local output = vim.fn.systemlist(cmd)
+    vim.cmd("vnew")
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, output)
+    scratch()
+    scratch_to_quickfix()
+  end)
+end)
