@@ -5,7 +5,9 @@ vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
+vim.o.autoread = true
 vim.o.timeoutlen = 300
+vim.o.wildignorecase = true
 vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start/"
 if not vim.loop.fs_stat(pluginpath) then
@@ -16,6 +18,7 @@ end
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", ";;", ":w<cr>")
+vim.keymap.set("n", "<leader><space>", ":b ")
 vim.keymap.set("n", "<C-n>", ":bn<cr>", {})
 vim.keymap.set("n", "<C-p>", ":bp<cr>", {})
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
@@ -24,16 +27,15 @@ vim.keymap.set("v", "<C-j>", ":move '>+1<CR>gv", { noremap = true, silent = true
 vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>n", ":set number!<cr>")
-vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep)
-vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, {})
 vim.keymap.set("n", "<leader>gl",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gd",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gb",      function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
 vim.keymap.set("n", "<leader>gs",      function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
-vim.keymap.set("n", "<leader><space>", function() require("telescope.builtin").buffers { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } end)
+vim.keymap.set("n", "<leader>sg",      require("telescope.builtin").live_grep)
+vim.keymap.set("n", "<leader>sr",      require("telescope.builtin").resume, {})
 vim.keymap.set("n", "<leader>sf",      function() require("telescope.builtin").find_files { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } end)
 vim.keymap.set("n", "<leader>so",      function() require("telescope.builtin").oldfiles { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } end)
-vim.keymap.set("n", "<leader>sb",      function() local fpath = vim.fn.expand("%:p") if fpath ~= "" then require("telescope.builtin").live_grep({ search_dirs = { fpath } }) end end)
+vim.keymap.set("n", "<leader>sb",      function() require("telescope.builtin").live_grep( { search_dirs = { vim.fn.expand("%:p")  }}) end )
 vim.keymap.set("n", "<leader>df",      function() require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), no_ignore = true, }) end, { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>ds",      function() require("telescope.builtin").live_grep({ cwd = vim.fn.expand("%:p:h"), additional_args = function() return { "--hidden", "--no-ignore" } end, }) end, { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>gp",      function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
