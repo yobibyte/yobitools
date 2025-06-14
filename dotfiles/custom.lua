@@ -69,3 +69,23 @@ vim.keymap.set("n", "<leader>/", function()
   end)
 end)
 ---- end of custom telescope 
+--- in case I ever want to go back to telescope
+local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start/"
+if not vim.loop.fs_stat(pluginpath) then
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/telescope.nvim", "--branch=0.1.x", pluginpath .. "telescope.nvim", })
+  vim.opt.rtp:append(pluginpath .. "telescope.nvim")
+  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/plenary.nvim", pluginpath .. "plenary.nvim", })
+end
+vim.keymap.set("n", "<leader>sf", function() 
+  local config = { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } 
+  if vim.bo.filetype == "netrw" then config.cwd = vim.fn.expand("%:p:h") config.no_ignore = true end
+  require("telescope.builtin").find_files(config)
+end)
+vim.keymap.set("n", "<leader>sg", function() 
+  local config = {}
+  if vim.bo.filetype == "netrw" then
+    config.search_dirs = {vim.b.netrw_curdir} 
+    config.additional_args = function() return { "--hidden", "--no-ignore" } end
+  end
+  require("telescope.builtin").live_grep(config)
+end)

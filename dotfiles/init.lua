@@ -10,22 +10,18 @@ vim.o.timeoutlen = 300
 vim.o.wildignorecase = true
 vim.g.netrw_banner = 0
 vim.opt.path:append("**")
-vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*",}
+vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*", "*/__pycache__/*"}
 vim.cmd("syntax off") vim.cmd("colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
-local pluginpath = vim.fn.stdpath("data") .. "/site/pack/plugins/start/"
-if not vim.loop.fs_stat(pluginpath) then
-  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/telescope.nvim", "--branch=0.1.x", pluginpath .. "telescope.nvim", })
-  vim.opt.rtp:append(pluginpath .. "telescope.nvim")
-  vim.fn.system({ "git", "clone", "https://github.com/yobibyte/plenary.nvim", pluginpath .. "plenary.nvim", })
-end
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", ";;", ":w<cr>")
 vim.keymap.set("n", "<leader>q", ":q!<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
+vim.keymap.set("n", "<leader>f", ":find **/*")
 vim.keymap.set("n", "<leader><space>", ":b ")
 vim.keymap.set("n", "<C-n>", ":cn<cr>", {})
 vim.keymap.set("n", "<C-p>", ":cp<cr>", {})
+vim.keymap.set("n", "<C-q>", ":cclose<cr>", {})
 vim.keymap.set("n", "<leader>n", ":bn<cr>")
 vim.keymap.set("n", "<leader>p", ":bp<cr>")
 vim.keymap.set("n", "<C-j>", ":move .+1<CR>", {})
@@ -35,28 +31,15 @@ vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv", { noremap = true, silent = true
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>so",":browse oldfiles<cr>")
-vim.keymap.set("n", "<leader>o",       function() local file = vim.fn.getreg('+') vim.cmd.edit(vim.fn.fnameescape(vim.fn.trim(file))) end, {})
-vim.keymap.set("n", "<leader>gl",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
-vim.keymap.set("n", "<leader>gd",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
-vim.keymap.set("n", "<leader>gb",      function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
-vim.keymap.set("n", "<leader>gs",      function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
-vim.keymap.set("n", "<leader>sf", function() 
-  local config = { previewer = false, layout_strategy = "center", layout_config = { height = 0.4, }, } 
-  if vim.bo.filetype == "netrw" then config.cwd = vim.fn.expand("%:p:h") config.no_ignore = true end
-  require("telescope.builtin").find_files(config)
-end)
-vim.keymap.set("n", "<leader>sg", function() 
-  local config = {}
-  if vim.bo.filetype == "netrw" then
-    config.search_dirs = {vim.b.netrw_curdir} 
-    config.additional_args = function() return { "--hidden", "--no-ignore" } end
-  end
-  require("telescope.builtin").live_grep(config)
-end)
-vim.keymap.set("n", "<leader>gp",      function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
-vim.keymap.set("n", "<leader>gr",      function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
-vim.keymap.set("n", "<leader>bb",      ":!black %<cr>")
-vim.keymap.set("n", "<leader>br",      function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>o", function() local file = vim.fn.getreg('+') vim.cmd.edit(vim.fn.fnameescape(vim.fn.trim(file))) end, {})
+vim.keymap.set("n", "<leader>gl",function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "log"}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gd",function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "diff"}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gb",function() local fpath = vim.fn.expand("%") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "blame", fpath}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gs",function() local hash = vim.fn.expand("<cword>") vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({"git", "show", hash}), "\n")) scratch() end, {})
+vim.keymap.set("n", "<leader>gp",function() vim.cmd( "edit " .. vim.fn .system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
+vim.keymap.set("n", "<leader>gr",function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
+vim.keymap.set("n", "<leader>bb",":!black %<cr>")
+vim.keymap.set("n", "<leader>br",function() vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, vim.split(vim.fn.system({ "ruff", "check", vim.fn.expand("#") }), "\n")) scratch() end, {})
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
     local space_count, tab_count = 0, 0
@@ -133,10 +116,42 @@ vim.keymap.set("n", "<leader>ss", function()
   vim.ui.input({ prompt = "> " }, function(pattern)
     if not pattern or pattern == "" then return end
     cmd = "grep -in '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))
-    local output = vim.fn.systemlist(cmd)
     vim.cmd("vnew")
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, output)
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
     scratch()
   end)
 end)
 vim.keymap.set("n", "<leader>x", scratch_to_quickfix)
+
+vim.api.nvim_create_user_command("FileSearch", function(opts)
+  local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
+  if vim.bo.filetype == "netrw" then
+      path = vim.b.netrw_curdir
+  else
+      path = vim.fn.getcwd()
+      excludes = excludes .. " -path '*.venv*' -prune -o"
+      excludes = excludes .. " -path '" .. vim.fn.getcwd() .. "/target*'" .. " -prune -o"
+  end
+  cmd = "find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print"
+  vim.cmd("enew")
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
+  scratch()
+  scratch_to_quickfix()
+end, { nargs = "+", })
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
+
+vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
+  local path = opts.bang and vim.fn.expand("%:p:h") or vim.fn.getcwd()
+  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
+  if vim.bo.filetype == "netrw" then
+      path = vim.b.netrw_curdir
+  else
+    excludes = excludes .. " --exclude-dir=.venv"
+  end
+  cmd = "grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path
+  vim.cmd("enew")
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
+  scratch()
+  scratch_to_quickfix()
+end, { nargs = "+"})
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("GrepTextSearch " .. name) end end) end)
