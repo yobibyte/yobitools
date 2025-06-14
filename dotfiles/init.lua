@@ -17,8 +17,7 @@ vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
-    local space_count, tab_count = 0, 0
-    local min_indent
+    local space_count, tab_count, min_indent = 0, 0, 8
     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do
       if not line:match("^%s*$") then
         local indent = line:match("^(%s+)")
@@ -27,13 +26,10 @@ vim.api.nvim_create_autocmd("BufReadPost", { callback = function()
             tab_count = tab_count + 1
           else
             space_count = space_count + 1
-            local len = #indent
-            if not min_indent or len < min_indent then min_indent = len end
+            min_indent = math.min(min_indent, #indent)
     end end end end
-    if tab_count > space_count then
-      vim.opt_local.expandtab = false
-    else
-      min_indent = min_indent or 2
+    vim.opt_local.expandtab = false
+    if tab_count <= space_count then
       vim.opt_local.expandtab = true
       vim.opt_local.shiftwidth = min_indent
       vim.opt_local.tabstop = min_indent
@@ -60,7 +56,6 @@ local function scratch_to_quickfix()
           -- for find results, only fnames
           table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, col = 1, text = "", })
   end end end end
-
   vim.api.nvim_buf_delete(bufnr, { force = true })
   vim.fn.setqflist(items, "r")
   vim.cmd("copen | cc")
