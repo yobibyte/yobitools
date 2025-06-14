@@ -46,15 +46,15 @@ local function scratch_to_quickfix()
       local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
       if filename and lnum then
         -- for grep filename:line:text
-        table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), col = 1, text = text, })
+        table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), text = text, })
       else
         local lnum, text = line:match("^(%d+):(.*)$")
         if lnum and text then
           -- for current buffer grep
-          table.insert(items, { filename = orig_name, lnum = tonumber(lnum), col = 1, text = text, })
+          table.insert(items, { filename = orig_name, lnum = tonumber(lnum), text = text, })
         else
           -- for find results, only fnames
-          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, col = 1, text = "", })
+          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, text = "", })
   end end end end
   vim.api.nvim_buf_delete(bufnr, { force = true })
   vim.fn.setqflist(items, "r")
@@ -119,10 +119,8 @@ vim.keymap.set("n", "<leader>gb", function() extcmd({"git", "blame", vim.fn.expa
 vim.keymap.set("n", "<leader>gs", function() extcmd({"git", "show", vim.fn.expand("<cword>")}) end)
 vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
+vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false) end end) end)
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("GrepTextSearch " .. pat) end end) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("GrepTextSearch " .. name) end end) end)
 vim.keymap.set("n", "<leader>bb",":!black %<cr>")
-vim.keymap.set("n", "<leader>br",function() extcmd({ "ruff", "check", vim.fn.expand("#") }) end)
-vim.keymap.set("n", "<leader>ss", function()
-  vim.ui.input({ prompt = "> " }, function(pattern) if not pattern or pattern == "" then return end extcmd("grep -in '" .. pattern .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false) end)
-end)
+vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("#") }) end)
