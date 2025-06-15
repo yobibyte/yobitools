@@ -53,7 +53,7 @@ local function extcmd(cmd, use_list, quickfix)
   if quickfix then scratch_to_quickfix() end
 end
 vim.api.nvim_create_user_command("FileSearch", function(opts)
-  local excludes = "-path '*.egg-info*' -prune -o -path '*.git*' -prune -o -path '*__pycache__*' -prune -o"
+  local excludes = "-path '*.egg-info*' -prune -o -path '*/.git*' -prune -o -path '*__pycache__*' -prune -o"
   if vim.bo.filetype == "netrw" then
       path = vim.b.netrw_curdir
   else
