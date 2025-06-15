@@ -39,7 +39,7 @@ local function scratch_to_quickfix()
         if lnum and text then
           table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
         else
-          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p"), lnum = 1, text = "", }) -- for find results, only fnames
+          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") }) -- for find results, only fnames
   end end end end
   vim.api.nvim_buf_delete(bufnr, { force = true })
   vim.fn.setqflist(items, "r")
@@ -91,6 +91,6 @@ vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("p
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false) end end) end)
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("GrepTextSearch " .. pat) end end) end)
-vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("FileSearch " .. pat) end end) end)
 vim.keymap.set("n", "<leader>bb",":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("%"), "--output-format=concise", "--quiet" }, true) end)
