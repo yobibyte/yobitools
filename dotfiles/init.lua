@@ -24,10 +24,8 @@ vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
             space_count = space_count + 1
             min_indent = math.min(min_indent, #indent)
     end end end
-    vim.opt_local.expandtab = false
-    if tab_count <= space_count then
-      vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent
-end end, })
+    if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end 
+end, })
 local function scratch_to_quickfix()
   local bufnr = vim.api.nvim_get_current_buf() 
   local items = {}
