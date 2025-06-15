@@ -93,4 +93,4 @@ vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("GrepTextSearch " .. pat) end end) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(name) if name then vim.cmd("FileSearch " .. name) end end) end)
 vim.keymap.set("n", "<leader>bb",":!black %<cr>")
-vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("%") }, true) end)
+vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("%"), "--output-format=concise", "--quiet" }, true) end)
