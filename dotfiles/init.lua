@@ -10,7 +10,7 @@ vim.o.timeoutlen = 300
 vim.o.wildignorecase = true
 vim.g.netrw_banner = 0
 vim.opt.path:append("**")
-vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*", "*/__pycache__/*"}
+vim.opt.wildignore:append {"*.venv/*", "*/.git/*", "*/target/*", "*/__pycache__/*, */wandb/*"}
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
@@ -51,13 +51,13 @@ local function extcmd(cmd, use_list, quickfix)
   vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if quickfix then scratch_to_quickfix() end
 end
 vim.api.nvim_create_user_command("FileSearch", function(opts)
-  local excludes = "-path '*.egg-info*' -prune -o -path '*/.git*' -prune -o -path '*__pycache__*' -prune -o"
+  local excludes = "-path '*.egg-info*' -prune -o -path '*/.git*' -prune -o -path '*__pycache__*' -prune -o -path '*wandb/*' -prune -o"
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir
   else path = vim.fn.getcwd() excludes = excludes .. " -path '*/.venv*' -prune -o" .. " -path '" .. path .. "/target*'" .. " -prune -o" end
   extcmd("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print", true, true)
 end, { nargs = "+", })
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
-  local path, excludes = "", "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
+  local path, excludes = "", "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__' --exclude-dir='wandb'"
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else path = vim.fn.getcwd() excludes = excludes .. " --exclude-dir=.venv" end
   extcmd("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path, true, true)
 end, { nargs = "+"})
