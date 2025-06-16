@@ -27,8 +27,7 @@ vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
     if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end 
 end, })
 local function scratch_to_quickfix()
-  local bufnr = vim.api.nvim_get_current_buf() 
-  local items = {}
+  local items, bufnr = {}, vim.api.nvim_get_current_buf() 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
     if line ~= "" then
       local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
