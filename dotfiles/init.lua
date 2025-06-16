@@ -49,8 +49,7 @@ local function extcmd(cmd, use_list, quickfix)
   if use_list then output = vim.fn.systemlist(cmd) else output = vim.fn.system(vim.split(output, "\n")) end
   if not output or #output == 0 then return end
   vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output)
-  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false
-  if quickfix then scratch_to_quickfix() end
+  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if quickfix then scratch_to_quickfix() end
 end
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local excludes = "-path '*.egg-info*' -prune -o -path '*/.git*' -prune -o -path '*__pycache__*' -prune -o"
@@ -63,9 +62,8 @@ vim.api.nvim_create_user_command("FileSearch", function(opts)
   extcmd("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print", true, true)
 end, { nargs = "+", })
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
-  local path = vim.fn.getcwd()
-  local excludes = "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
-  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else excludes = excludes .. " --exclude-dir=.venv" end
+  local path, excludes = "", "--exclude-dir='*target*' --exclude-dir=.git --exclude-dir='*.egg-info' --exclude-dir='__pycache__'"
+  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else path = vim.fn.getcwd() excludes = excludes .. " --exclude-dir=.venv" end
   extcmd("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path, true, true)
 end, { nargs = "+"})
 vim.keymap.set("n", "<leader>q", ":q!<cr>")
