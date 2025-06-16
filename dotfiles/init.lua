@@ -16,14 +16,9 @@ vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { 
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
     local space_count, tab_count, min_indent = 0, 0, 8
-    for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do
-      local indent = line:match("^(%s+)")
+    for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do local indent = line:match("^(%s+)")
       if indent and not line:match("^%s*$") then
-          if indent:find("\t") then
-            tab_count = tab_count + 1
-          else
-            space_count = space_count + 1
-            min_indent = math.min(min_indent, #indent)
+          if indent:find("\t") then tab_count = tab_count + 1 else space_count = space_count + 1 min_indent = math.min(min_indent, #indent)
     end end end
     if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end 
 end, })
