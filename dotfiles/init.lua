@@ -51,16 +51,6 @@ local function extcmd(cmd, use_list, quickfix)
   vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output)
   vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if quickfix then scratch_to_quickfix() end
 end
-vim.api.nvim_create_user_command("FileSearch", function(opts)
-  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
-  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
-  extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), opts.args), true, true) end, { nargs = "+", })
-vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
-  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
-  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
-  extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), opts.args, path), true, true) end, { nargs = "+" })
 vim.keymap.set("n", "<leader>q", ":q!<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader>f", ":find **/*")
@@ -81,7 +71,15 @@ vim.keymap.set("n", "<leader>gs", function() extcmd({"git", "show", vim.fn.expan
 vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
 vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false) end end) end)
-vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("GrepTextSearch " .. pat) end end) end)
-vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then vim.cmd("FileSearch " .. pat) end end) end)
+vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
+  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
+  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
+  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
+  extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), pat, path), true, true) end end, { nargs = "+" }) end)
+vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
+  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
+  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
+  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
+  extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>bb",":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("%"), "--output-format=concise", "--quiet" }, true) end)
