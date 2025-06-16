@@ -68,8 +68,6 @@ vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir else excludes = excludes .. " --exclude-dir=.venv" end
   extcmd("grep -IEnr "  .. excludes .. " '" .. opts.args .. "' " .. path, true, true)
 end, { nargs = "+"})
-vim.keymap.set("i", "jj", "<Esc>")
-vim.keymap.set("n", ";;", ":w<cr>")
 vim.keymap.set("n", "<leader>q", ":q!<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader>f", ":find **/*")
