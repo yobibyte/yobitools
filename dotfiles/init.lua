@@ -11,11 +11,10 @@ vim.o.wildignorecase = true
 vim.g.netrw_banner = 0
 _G.basic_excludes = { "*/.git*", "*.egg-info*", "*__pycache__*", "*wandb/*","*target*" }
 _G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { "*/.venv*", })
-vim.opt.path:append("**") vim.opt.wildignore:append(_G.ext_excludes)
+vim.opt.wildignore:append(_G.ext_excludes)
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
-vim.api.nvim_create_autocmd("BufReadPost",  { callback = function()
-    local space_count, tab_count, min_indent = 0, 0, 8
+vim.api.nvim_create_autocmd("BufReadPost",  { callback = function() local space_count, tab_count, min_indent = 0, 0, 8
     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do local indent = line:match("^(%s+)")
       if indent and not line:match("^%s*$") then
           if indent:find("\t") then tab_count = tab_count + 1 else space_count = space_count + 1 min_indent = math.min(min_indent, #indent)
@@ -36,10 +35,7 @@ local function scratch_to_quickfix()
         else
           table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") }) -- for find results, only fnames
   end end end end
-  vim.api.nvim_buf_delete(bufnr, { force = true })
-  vim.fn.setqflist(items, "r")
-  vim.cmd("copen | cc")
-end
+  vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") end
 local function extcmd(cmd, use_list, quickfix) 
   if use_list then output = vim.fn.systemlist(cmd) else output = vim.fn.system(vim.split(output, "\n")) end
   if not output or #output == 0 then return end
