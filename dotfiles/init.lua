@@ -52,12 +52,8 @@ local function extcmd(cmd, use_list, quickfix)
 end
 vim.api.nvim_create_user_command("FileSearch", function(opts)
   local excludes = "-path '*.egg-info*' -prune -o -path '*/.git*' -prune -o -path '*__pycache__*' -prune -o"
-  if vim.bo.filetype == "netrw" then
-      path = vim.b.netrw_curdir
-  else
-      path = vim.fn.getcwd()
-      excludes = excludes .. " -path '*/.venv*' -prune -o" .. " -path '" .. path .. "/target*'" .. " -prune -o"
-  end
+  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir
+  else path = vim.fn.getcwd() excludes = excludes .. " -path '*/.venv*' -prune -o" .. " -path '" .. path .. "/target*'" .. " -prune -o" end
   extcmd("find " .. vim.fn.shellescape(path) .. " " .. excludes .. " " .. " -name " .. "'*" .. opts.args .. "*' -print", true, true)
 end, { nargs = "+", })
 vim.api.nvim_create_user_command("GrepTextSearch", function(opts)
