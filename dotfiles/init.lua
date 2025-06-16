@@ -36,12 +36,10 @@ local function scratch_to_quickfix()
           table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") }) -- for find results, only fnames
   end end end end
   vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") end
-local function extcmd(cmd, use_list, quickfix) 
-  if use_list then output = vim.fn.systemlist(cmd) else output = vim.fn.system(vim.split(output, "\n")) end
-  if not output or #output == 0 then return end
+local function extcmd(cmd, quickfix) 
+  output = vim.fn.systemlist(cmd) if not output or #output == 0 then return end
   vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output)
-  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if quickfix then scratch_to_quickfix() end
-end
+  vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if quickfix then scratch_to_quickfix() end end
 vim.keymap.set("n", "<leader>q", ":q!<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader>f", ":find **/*")
@@ -55,22 +53,22 @@ vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>so",":browse oldfiles<cr>")
 vim.keymap.set("n", "<leader>x",  scratch_to_quickfix)
-vim.keymap.set("n", "<leader>gl", function() extcmd({"git", "log"}, true) end)
-vim.keymap.set("n", "<leader>gd", function() extcmd({"git", "diff"}, true) end)
-vim.keymap.set("n", "<leader>gb", function() extcmd({"git", "blame", vim.fn.expand("%")}, true) end)
-vim.keymap.set("n", "<leader>gs", function() extcmd({"git", "show", vim.fn.expand("<cword>")}, true) end)
+vim.keymap.set("n", "<leader>gl", function() extcmd("git log") end)
+vim.keymap.set("n", "<leader>gd", function() extcmd("git diff") end)
+vim.keymap.set("n", "<leader>gb", function() extcmd("git blame" .. vim.fn.expand("%")) end)
+vim.keymap.set("n", "<leader>gs", function() extcmd("git show" .. vim.fn.expand("<cword>")) end)
 vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end)
 vim.keymap.set("n", "<leader>gr", function() local registry = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. registry .. "/" .. vim.fn.systemlist("ls -1 " .. registry)[1]) end)
-vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), true, false) end end) end)
+vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), false) end end) end)
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
   local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
   for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
-  extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), pat, path), true, true) end end, { nargs = "+" }) end)
+  extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), pat, path), true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
   local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
   if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
   for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
-  extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
+  extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>bb",":!black %<cr>")
 vim.keymap.set("n", "<leader>br", function() extcmd({ "ruff", "check", vim.fn.expand("%"), "--output-format=concise", "--quiet" }, true) end)
