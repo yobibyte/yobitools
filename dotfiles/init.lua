@@ -5,7 +5,6 @@ vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
-vim.o.autoread = true
 vim.o.timeoutlen = 300
 vim.g.netrw_banner = 0
 _G.basic_excludes = { "*/.git*", "*.egg-info*", "*__pycache__*", "*wandb/*","*target*" }
