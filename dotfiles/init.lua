@@ -17,9 +17,9 @@ vim.api.nvim_create_autocmd("BufReadPost",  { callback = function() local space_
       if indent and not line:match("^%s*$") then
           if indent:find("\t") then tab_count = tab_count + 1 else space_count = space_count + 1 min_indent = math.min(min_indent, #indent)
     end end end
-    if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end 
-end, })
+    if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end end, })
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
+local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
 local function scratch_to_quickfix()
   local items, bufnr = {}, vim.api.nvim_get_current_buf() 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
@@ -57,13 +57,9 @@ vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("p
 vim.keymap.set("n", "<leader>gr", function() local reg = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. reg .. "/" .. vim.fn.systemlist("ls -1 " .. reg)[1]) end)
 vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then extcmd("grep -in '" .. pat .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), false) end end) end)
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
-  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
-  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
+  local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
   extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), pat, path), true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
-  local path, excludes, parts = vim.fn.getcwd(), _G.ext_excludes, {}
-  if vim.bo.filetype == "netrw" then path = vim.b.netrw_curdir excludes = _G.basic_excludes end
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
+  local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
   extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
