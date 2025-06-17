@@ -59,3 +59,5 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
   vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
+vim.keymap.set('n', '<C-d>', '<C-d>zz') vim.keymap.set('n', '<C-u>', '<C-u>zz') vim.keymap.set('n', '<C-f>', '<C-f>zz') vim.keymap.set('n', '<C-b>', '<C-b>zz')
+
