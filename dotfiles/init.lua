@@ -5,17 +5,13 @@ vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
-vim.o.timeoutlen = 300
 vim.g.netrw_banner = 0
-_G.basic_excludes = { ".git", "*.egg-info", "__pycache__", "wandb","target" }
-_G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { ".venv", })
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+_G.basic_excludes = { ".git", "*.egg-info", "__pycache__", "wandb","target" } _G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { ".venv", })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost",  { callback = function() local space_count, tab_count, min_indent = 0, 0, 8
     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do local indent = line:match("^(%s+)")
-      if indent and not line:match("^%s*$") then
-          if indent:find("\t") then tab_count = tab_count + 1 else space_count = space_count + 1 min_indent = math.min(min_indent, #indent)
-    end end end
+      if indent and not line:match("^%s*$") then if indent:find("\t") then tab_count = tab_count + 1 else space_count = space_count + 1 min_indent = math.min(min_indent, #indent) end end end
     if tab_count <= space_count then vim.opt_local.expandtab, vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = true, min_indent, min_indent, min_indent end end, })
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
@@ -26,8 +22,7 @@ local function scratch_to_quickfix(close_qf)
       local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
       if filename and lnum then
         table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
-      else
-        local lnum, text = line:match("^(%d+):(.*)$")
+      else local lnum, text = line:match("^(%d+):(.*)$")
         if lnum and text then
           table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
         else
@@ -46,6 +41,7 @@ vim.keymap.set("n", "<leader><space>", ":b ")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>x",  scratch_to_quickfix)
+vim.keymap.set("n", "<leader>h",  function() vim.bo.buftype = "" vim.bo.bufhidden = "hide" vim.bo.swapfile = true end)
 vim.keymap.set("n", "<leader>so", function() vim.cmd("enew")  vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.v.oldfiles) scratch() end) 
 vim.keymap.set("n", "<leader>gl", function() extcmd("git log", false, false, true) end)
 vim.keymap.set("n", "<leader>gd", function() extcmd("git diff", false, false, true) end)
@@ -62,4 +58,4 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
   extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
-  vim.keymap.set('n', '<leader>a' .. l, "m" .. u, { noremap = true, silent = true })  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
+  vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
