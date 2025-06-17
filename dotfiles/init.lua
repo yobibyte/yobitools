@@ -39,7 +39,6 @@ local function extcmd(cmd, qf, close_qf, novsplit)
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<C-s>", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen") end)
-vim.keymap.set("n", "<leader>q", ":qall!<cr>")
 vim.keymap.set("n", "<leader>n", ":bn<cr>")
 vim.keymap.set("n", "<leader>p", ":bp<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
@@ -63,5 +62,4 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
   extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
-  vim.keymap.set('n', '<leader>a' .. l, "m" .. u, { noremap = true, silent = true })
-  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
+  vim.keymap.set('n', '<leader>a' .. l, "m" .. u, { noremap = true, silent = true })  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
