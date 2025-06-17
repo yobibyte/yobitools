@@ -31,6 +31,7 @@ local function scratch_to_quickfix(close_qf)
 local function extcmd(cmd, qf, close_qf, novsplit) 
   output = vim.fn.systemlist(cmd) if not output or #output == 0 then return end
   vim.cmd(novsplit and "enew" or "vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output) scratch() if qf then scratch_to_quickfix(close_qf) end end
+vim.keymap.set("x", "<leader>p", "\"_dP")
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<C-s>", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen") end)
@@ -62,4 +63,3 @@ vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), v
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
   vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
 vim.keymap.set('n', '<C-d>', '<C-d>zz') vim.keymap.set('n', '<C-u>', '<C-u>zz') vim.keymap.set('n', '<C-f>', '<C-f>zz') vim.keymap.set('n', '<C-b>', '<C-b>zz')
-
