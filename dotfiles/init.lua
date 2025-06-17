@@ -62,3 +62,6 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
   local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '*%s*' -prune -o", pattern)) end
   extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
+local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
+  vim.keymap.set('n', '<leader>a' .. l, "m" .. u, { noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
