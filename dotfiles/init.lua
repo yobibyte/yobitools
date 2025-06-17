@@ -7,8 +7,8 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.timeoutlen = 300
 vim.g.netrw_banner = 0
-_G.basic_excludes = { "*/.git*", "*.egg-info*", "*__pycache__*", "*wandb/*","*target*" }
-_G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { "*/.venv*", })
+_G.basic_excludes = { ".git", "*.egg-info", "__pycache__", "wandb","target" }
+_G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { ".venv", })
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("BufReadPost",  { callback = function() local space_count, tab_count, min_indent = 0, 0, 8
@@ -59,6 +59,6 @@ vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, fun
   local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
   extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), pat, path), true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(pat) if pat then 
-  local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '%s' -prune -o", pattern)) end
+  local path, excludes, parts = pre_search() for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '*%s*' -prune -o", pattern)) end
   extcmd(string.format("find %s %s -name '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), pat), true, true) end end, { nargs = "+" }) end)
 vim.keymap.set("n", "<leader>l", function() local bn = vim.fn.expand("%") extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end)
