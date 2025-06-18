@@ -1,4 +1,4 @@
-vm.g.mapleader = " "
+vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.o.clipboard = "unnamedplus"
 vim.o.breakindent = true
