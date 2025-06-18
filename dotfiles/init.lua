@@ -1,4 +1,4 @@
-vim.g.mapleader = " "
+vm.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.o.clipboard = "unnamedplus"
 vim.o.breakindent = true
@@ -17,20 +17,21 @@ local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim
 local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
 local function scratch_to_quickfix(close_qf)
   local items, bufnr = {}, vim.api.nvim_get_current_buf() 
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-    if line ~= "" then
-      local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
-      if filename and lnum then
-        table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
-      else local lnum, text = line:match("^(%d+):(.*)$")
-        if lnum and text then
-          table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
-        else
-          table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") }) -- for find results, only fnames
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then
+    local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
+    if filename and lnum then
+      table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
+    else local lnum, text = line:match("^(%d+):(.*)$")
+      if lnum and text then
+        table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
+      else
+        table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") }) -- for find results, only fnames
   end end end end vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") if close_qf then vim.cmd("cclose") end end
 local function extcmd(cmd, qf, close_qf, novsplit) 
   output = vim.fn.systemlist(cmd) if not output or #output == 0 then return end
   vim.cmd(novsplit and "enew" or "vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, output) scratch() if qf then scratch_to_quickfix(close_qf) end end
+vim.keymap.set('n', '<C-d>', '<C-d>zz') 
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set("x", "<leader>p", "\"_dP")
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>")
@@ -62,4 +63,3 @@ vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), v
   elseif ft == "rust" then vim.fn.systemlist("cargo fmt") extcmd("cargo check && cargo clippy") end end)
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper()
   vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u, { noremap = true, silent = true }) end
-vim.keymap.set('n', '<C-d>', '<C-d>zz') vim.keymap.set('n', '<C-u>', '<C-u>zz') vim.keymap.set('n', '<C-f>', '<C-f>zz') vim.keymap.set('n', '<C-b>', '<C-b>zz')
