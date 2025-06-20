@@ -39,7 +39,7 @@ vim.keymap.set("n", "<C-s>", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).
 vim.keymap.set("n", "<leader>n", ":bn<cr>")
 vim.keymap.set("n", "<leader>p", ":bp<cr>")
 vim.keymap.set("n", "<leader>d", ":bd<cr>")
-vim.keymap.set("n", "<leader><space>", ":b ")
+vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>w", ":set number!<cr>")
 vim.keymap.set("n", "<leader>x",  scratch_to_quickfix)
