@@ -13,9 +13,9 @@ local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netr
 local function scratch_to_quickfix(close_qf)
   local items, bufnr = {}, vim.api.nvim_get_current_buf() 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then
-    local filename, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
-    if filename and lnum then
-      table.insert(items, { filename = vim.fn.fnamemodify(filename, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
+    local f, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
+    if f and lnum then
+      table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
     else local lnum, text = line:match("^(%d+):(.*)$")
       if lnum and text then
         table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) -- for current buffer grep
