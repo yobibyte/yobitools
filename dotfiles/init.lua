@@ -10,10 +10,8 @@ vim.api.nvim_create_autocmd("FileType",  { callback = function() local i = 4
     vim.opt_local.expandtab=true vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
-local function scratch_to_quickfix(close_qf)
-  local items, bufnr = {}, vim.api.nvim_get_current_buf() 
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then
-    local f, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
+local function scratch_to_quickfix(close_qf) local items, bufnr = {}, vim.api.nvim_get_current_buf() 
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
     if f and lnum then
       table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = tonumber(lnum), text = text, }) -- for grep filename:line:text
     else local lnum, text = line:match("^(%d+):(.*)$")
