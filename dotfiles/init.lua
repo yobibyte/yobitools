@@ -45,10 +45,10 @@ vim.keymap.set("n", "<leader>gp", function() vim.cmd("edit " .. vim.fn.system("p
 vim.keymap.set("n", "<leader>gr", function() local reg = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. reg .. "/" .. vim.fn.systemlist("ls -1 " .. reg)[1]) end)
 vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(p) if p then extcmd("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), false) end end) end)
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, excludes, parts = pre_search() 
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pattern)) end
+  for _, pat in ipairs(excludes) do table.insert(parts, string.format("--exclude-dir='%s'", pat)) end
   extcmd(string.format("grep -IEnr %s '%s' %s", table.concat(parts, " "), p, path), true) end end) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, excludes, parts = pre_search()
-  for _, pattern in ipairs(excludes) do table.insert(parts, string.format("-path '*%s*' -prune -o", pattern)) end
+  for _, pat in ipairs(excludes) do table.insert(parts, string.format("-path '*%s*' -prune -o", pat)) end
   extcmd(string.format("find %s %s -path '*%s*' -print", vim.fn.shellescape(path), table.concat(parts, " "), p), true, true) end end) end)
 vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype
   if ft == "python" then extcmd("isort -q " .. bn .. "&& black -q " .. bn) extcmd("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") 
