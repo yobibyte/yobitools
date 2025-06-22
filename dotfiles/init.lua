@@ -11,8 +11,8 @@ local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim
 local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
 local function sc_to_qf(close_qf) local items, bufnr = {}, vim.api.nvim_get_current_buf() 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
-    if f and lnum then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = tonumber(lnum), text = text, }) else local lnum, text = line:match("^(%d+):(.*)$")
-      if lnum and text then table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = tonumber(lnum), text = text, }) else table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") })
+    if f and lnum then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = lnum, text = text, }) else local lnum, text = line:match("^(%d+):(.*)$")
+      if lnum and text then table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = lnum, text = text, }) else table.insert(items, { filename = vim.fn.fnamemodify(line, ":p") })
   end end end end vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") if close_qf then vim.cmd("cclose") end end
 local function extc(cmd, qf, close_qf, novs) out = vim.fn.systemlist(cmd) if not out or #out == 0 then return end vim.cmd(novs and "enew" or "vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, out) scratch() if qf then sc_to_qf(close_qf) end end
 vim.keymap.set('n', '<C-d>', '<C-d>zz')     vim.keymap.set('n', '<C-u>', '<C-u>zz')
@@ -36,8 +36,7 @@ vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, fun
   for _, pat in ipairs(excludes) do table.insert(ex, string.format("--exclude-dir='%s'", pat)) end extc(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true) end end) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, excludes, ex = pre_search()
   for _, pat in ipairs(excludes) do table.insert(ex, string.format("-path '*%s*' -prune -o", pat)) end extc(string.format("find %s %s -path '*%s*' -print", vim.fn.shellescape(path), table.concat(ex, " "), p), true, true) end end) end)
-vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype
-  if ft == "python" then extc("isort -q " .. bn .. "&& black -q " .. bn) extc("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") 
-  elseif ft == "rust" then vim.fn.systemlist("cargo fmt") extc("cargo check && cargo clippy") end end)
+vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype if ft == "rust" then vim.fn.systemlist("cargo fmt") extc("cargo check && cargo clippy") 
+  elseif ft == "python" then extc("isort -q " .. bn .. "&& black -q " .. bn) extc("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end end)
 local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper() vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u) end
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then extc(c) end end) end)
