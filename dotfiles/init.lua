@@ -1,13 +1,13 @@
 vim.g.mapleader = " "    vim.g.maplocalleader = " "
 vim.o.ignorecase = true  vim.o.smartcase = true
 vim.o.breakindent = true vim.o.undofile = true
+vim.opt.expandtab = true
 vim.o.clipboard = "unnamedplus"
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 _G.basic_excludes = { ".git", "*.egg-info", "__pycache__", "wandb","target" } _G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { ".venv", })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
-vim.api.nvim_create_autocmd("FileType",  { callback = function() local i = 4
-    for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 100, false)) do local cind = line:match("^(%s+)") if cind and not line:match("^%s*$") then i = math.min(i, #cind) end end
-    vim.opt_local.expandtab=true vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
+vim.api.nvim_create_autocmd("FileType",  { callback = function() local i = 4 for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local cind = line:match("^(%s+)") 
+  if cind and not line:match("^%s*$") then i = math.min(i, #cind) end end vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
 local function scratch() vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end
 local function pre_search() if vim.bo.filetype == "netrw" then return vim.b.netrw_curdir, _G.basic_excludes, {} else return vim.fn.getcwd(), _G.ext_excludes, {} end end
 local function scratch_to_quickfix(close_qf) local items, bufnr = {}, vim.api.nvim_get_current_buf() 
