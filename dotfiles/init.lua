@@ -38,5 +38,5 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
   for _, pat in ipairs(excludes) do table.insert(ex, string.format("-path '*%s*' -prune -o", pat)) end extc(string.format("find %s %s -path '*%s*' -print", vim.fn.shellescape(path), table.concat(ex, " "), p), true, true) end end) end)
 vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype if ft == "rust" then vim.fn.systemlist("cargo fmt") extc("cargo check && cargo clippy") 
   elseif ft == "python" then extc("isort -q " .. bn .. "&& black -q " .. bn) extc("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end end)
-local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) local u = l:upper() vim.keymap.set('n', '<leader>a' .. l, "m" .. u)  vim.keymap.set('n', '<leader>j' .. l, "'" .. u) end
+local letters = "abcdefghijklmnopqrstuvwxyz" for i = 1, #letters do local l = letters:sub(i, i) vim.keymap.set('n', '<leader>a' .. l, "m" .. l:upper())  vim.keymap.set('n', '<leader>j' .. l, "'" .. l:upper()) end
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then extc(c) end end) end)
