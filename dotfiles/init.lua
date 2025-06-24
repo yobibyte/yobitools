@@ -3,10 +3,9 @@ vim.o.ignorecase  = true   vim.o.smartcase      = true
 vim.o.breakindent = true   vim.o.undofile       = true
 vim.opt.expandtab = true   vim.o.clipboard      = "unnamedplus"
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
-_G.basic_excludes = { ".git", "*.egg-info", "__pycache__", "wandb","target" } _G.ext_excludes = vim.list_extend(vim.deepcopy(_G.basic_excludes), { ".venv", })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("FileType",     { callback = function() local i = 4 for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local c = l:match("^(%s+)%S") if c then i = math.min(i, #c) end end vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
-local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), _G.ext_excludes, {} if vim.bo.filetype == "netrw" then path, exc = vim.b.netrw_curdir, _G.basic_excludes end 
+local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} if vim.bo.filetype == "netrw" then path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }  end 
   for i=1,#exc do if is_grep then table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) else table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end end return path, table.concat(ex, " ") end
 local function cqf(cls) local items, bufnr = {}, vim.api.nvim_get_current_buf() 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, lnum, text = line:match("^([^:]+):(%d+):(.*)$")
