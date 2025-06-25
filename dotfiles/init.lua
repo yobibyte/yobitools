@@ -25,6 +25,5 @@ vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>sg", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, ex = pre_search(true) extc(string.format("grep -IEnr %s '%s' %s", ex, p, path), true) end end) end)
 vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, ex = pre_search(false) extc(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), ex, p), true, true) end end) end)
 vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype if ft == "rust" then vim.fn.systemlist("cargo fmt") extc("cargo check && cargo clippy") elseif ft == "python" then extc("isort -q " .. bn .. "&& black -q " .. bn) extc("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end end)
-local letters = "sdfghjkl" for i = 1, #letters do local l = letters:sub(i, i) vim.keymap.set('n', '<leader>a' .. l, "m" .. l:upper())  vim.keymap.set('n', '<leader>j' .. l, "'" .. l:upper()) end
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then extc(c) end end) end)
 vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
