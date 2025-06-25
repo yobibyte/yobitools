@@ -7,10 +7,9 @@ vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highligh
 vim.api.nvim_create_autocmd("FileType",     { callback = function() local i = 4 for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local c = l:match("^(%s+)%S") if c then i = math.min(i, #c) end end vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
 local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} if vim.bo.filetype == "netrw" then path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }  end 
   for i=1,#exc do if is_grep then table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) else table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end end return path, table.concat(ex, " ") end
-local function cqf(cls) local items, bufnr = {}, vim.api.nvim_get_current_buf() 
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, ln, text = line:match("^([^:]+):(%d+):(.*)$")
-    if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = text, }) else local ln, text = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = ln, text = text, }) end
-  end end vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") if cls then vim.cmd("cclose") end end
+local function cqf(cls) local items, bufnr = {}, vim.api.nvim_get_current_buf() for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, ln, text = line:match("^([^:]+):(%d+):(.*)$")
+  if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = text, }) else local ln, text = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = ln, text = text, }) end end end 
+  vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") if cls then vim.cmd("cclose") end end
 local function extc(cmd, qf, cls, novs) o = vim.fn.systemlist(cmd) if o and #o > 0 then vim.cmd(novs and "enew" or "vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, o) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if qf then cqf(cls) end end end
 vim.keymap.set("n", "<C-n>", ":cn<cr>")     vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<leader>n", ":bn<cr>") vim.keymap.set("n", "<leader>p", ":bp<cr>") vim.keymap.set("n", "<leader>d", ":bd<cr>")
