@@ -1,7 +1,6 @@
-vim.g.mapleader   = " "    vim.g.maplocalleader = " "
-vim.o.ignorecase  = true   vim.o.smartcase      = true
-vim.o.breakindent = true   vim.o.undofile       = true
-vim.opt.expandtab = true   vim.o.clipboard      = "unnamedplus"
+vim.g.mapleader  = " "    vim.g.maplocalleader = " "   vim.o.clipboard = "unnamedplus"
+vim.o.ignorecase = true   vim.o.smartcase      = true
+vim.o.undofile   = true   vim.opt.expandtab    = true   
 vim.cmd("syntax off | colorscheme retrobox") vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
 vim.api.nvim_create_autocmd("FileType",     { callback = function() local i = 4 for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local c = l:match("^(%s+)%S") if c then i = math.min(i, #c) end end vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
@@ -14,10 +13,10 @@ local function extc(cmd, qf, cls) o = vim.fn.systemlist(cmd) if o and #o > 0 the
 vim.keymap.set("n", "<C-n>", ":cn<cr>")     vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<leader>n", ":bn<cr>") vim.keymap.set("n", "<leader>p", ":bp<cr>") vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("x", "<leader>p", "\"_dP")
-vim.keymap.set("n", "<C-s>", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen") end)
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>x",  cqf)
+vim.keymap.set("n", "<C-s>", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen") end)
 vim.keymap.set("n", "<leader>h",  function() vim.bo.buftype = "" vim.bo.bufhidden = "hide" vim.bo.swapfile = true end)
 vim.keymap.set("n", "<leader>gc", function() extc("git diff --name-only --diff-filter=U", true) end)
 vim.keymap.set("n", "<leader>gd", function() if vim.bo.filetype == "rust" then local rg = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. rg .. "/" .. vim.fn.systemlist("ls -1 " .. rg)[1]) else vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end end)
