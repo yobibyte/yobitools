@@ -10,7 +10,7 @@ local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), { ".gi
 local function cqf(cls) local items, bufnr = {}, vim.api.nvim_get_current_buf() for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do if line ~= "" then local f, ln, text = line:match("^([^:]+):(%d+):(.*)$")
   if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = text, }) else local ln, text = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = ln, text = text, }) end end end 
   vim.api.nvim_buf_delete(bufnr, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc") if cls then vim.cmd("cclose") end end
-local function extc(cmd, qf, cls, novs) o = vim.fn.systemlist(cmd) if o and #o > 0 then vim.cmd(novs and "enew" or "vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, o) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if qf then cqf(cls) end end end
+local function extc(cmd, qf, cls) o = vim.fn.systemlist(cmd) if o and #o > 0 then vim.cmd("vnew") vim.api.nvim_buf_set_lines( 0, 0, -1, false, o) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false if qf then cqf(cls) end end end
 vim.keymap.set("n", "<C-n>", ":cn<cr>")     vim.keymap.set("n", "<C-p>", ":cp<cr>")
 vim.keymap.set("n", "<leader>n", ":bn<cr>") vim.keymap.set("n", "<leader>p", ":bp<cr>") vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("x", "<leader>p", "\"_dP")
@@ -19,8 +19,6 @@ vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set("n", "<leader>e", ":Explore<cr>")
 vim.keymap.set("n", "<leader>x",  cqf)
 vim.keymap.set("n", "<leader>h",  function() vim.bo.buftype = "" vim.bo.bufhidden = "hide" vim.bo.swapfile = true end)
-vim.keymap.set("n", "<leader>gb", function() extc("git blame " .. vim.fn.expand("%"), false, false, true) end)
-vim.keymap.set("n", "<leader>gs", function() extc("git show " .. vim.fn.expand("<cword>")) end)
 vim.keymap.set("n", "<leader>gc", function() extc("git diff --name-only --diff-filter=U", true) end)
 vim.keymap.set("n", "<leader>gd", function() if vim.bo.filetype == "rust" then local rg = os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo") .. "/registry/src" vim.cmd( "edit " .. rg .. "/" .. vim.fn.systemlist("ls -1 " .. rg)[1]) else vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end end)
 vim.keymap.set("n", "<leader>ss", function() vim.ui.input({ prompt = "> " }, function(p) if p then extc("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))) end end) end)
@@ -29,3 +27,4 @@ vim.keymap.set("n", "<leader>sf", function() vim.ui.input({ prompt = "> " }, fun
 vim.keymap.set("n", "<leader>l", function() local bn, ft = vim.fn.expand("%"), vim.bo.filetype if ft == "rust" then vim.fn.systemlist("cargo fmt") extc("cargo check && cargo clippy") elseif ft == "python" then extc("isort -q " .. bn .. "&& black -q " .. bn) extc("ruff check --output-format=concise --quiet " .. bn, true) vim.cmd("edit") end end)
 local letters = "sdfghjkl" for i = 1, #letters do local l = letters:sub(i, i) vim.keymap.set('n', '<leader>a' .. l, "m" .. l:upper())  vim.keymap.set('n', '<leader>j' .. l, "'" .. l:upper()) end
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then extc(c) end end) end)
+vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
