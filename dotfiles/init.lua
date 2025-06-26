@@ -71,7 +71,27 @@ vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then ext(c) end end) end)
-vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " }, function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))) end end) end)
-vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, ex = pre_search(true) ext(string.format("grep -IEnr %s '%s' %s", ex, p, path)) qf() end end) end)
-vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then local path, ex = pre_search(false) ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), ex, p)) qf() vim.cmd("cclose") end end) end)
-vim.keymap.set("n", "<leader>j", function() if vim.bo.filetype == "rust" then vim.cmd("edit " .. vim.fn.systemlist("find " .. (os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo"))  .. "/registry/src  -maxdepth 1 -mindepth 1 ")[1])  else vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") end end)
+vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " }, 
+  function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))) end 
+end) end)
+vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, 
+  function(p) if p then 
+    local path, ex = pre_search(true) 
+    ext(string.format("grep -IEnr %s '%s' %s", ex, p, path)) qf()
+  end 
+end) end)
+vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, 
+  function(p) if p then 
+    local path, ex = pre_search(false) 
+    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), ex, p))
+    qf() 
+    vim.cmd("cclose") 
+  end
+end) end)
+vim.keymap.set("n", "<leader>j", function() 
+  if vim.bo.filetype == "rust" then 
+    vim.cmd("edit " .. vim.fn.systemlist("find " .. (os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo"))  .. "/registry/src  -maxdepth 1 -mindepth 1 ")[1])
+  else 
+    vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") 
+  end 
+end)
