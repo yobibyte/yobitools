@@ -14,7 +14,16 @@ local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), { ".gi
 local function qf() local items = {} for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do if line ~= "" then local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
   if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) else local ln, txt = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname("#"), lnum = ln, text = txt, }) end end end 
   vim.api.nvim_buf_delete(0, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc")  end
-local function ext(c) o = vim.fn.systemlist(c) if o and #o > 0 then vim.cmd("vnew") vim.api.nvim_buf_set_lines(0, 0, -1, false, o) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end end
+local function ext(c) 
+  o = vim.fn.systemlist(c) 
+  if o and #o > 0 then 
+    vim.cmd("vnew") 
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
+    vim.bo.buftype = "nofile" 
+    vim.bo.bufhidden = "wipe" 
+    vim.bo.swapfile = false 
+  end 
+end
 vim.keymap.set("n", "<leader>x",  qf)
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>") 
