@@ -7,8 +7,23 @@ vim.opt.expandtab    = true
 vim.o.clipboard      = "unnamedplus"
 vim.cmd("syntax off | colorscheme retrobox")
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
-vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*", })
-vim.api.nvim_create_autocmd("FileType",     { callback = function() local i = 4 for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local c = l:match("^(%s+)%S") if c then i = math.min(i, #c) end end vim.opt_local.shiftwidth=i vim.opt_local.tabstop=i vim.opt_local.softtabstop = i end , })
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function() vim.highlight.on_yank() end,
+  group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
+  pattern = "*"
+})
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function() 
+    local i = 4 
+    for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do 
+      local c = l:match("^(%s+)%S") 
+      if c then i = math.min(i, #c) end
+    end 
+    vim.opt_local.shiftwidth=i 
+    vim.opt_local.tabstop=i 
+    vim.opt_local.softtabstop = i 
+  end
+})
 local function pre_search(is_grep) 
   local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
   if vim.bo.filetype == "netrw" then 
