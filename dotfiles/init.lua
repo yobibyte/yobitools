@@ -24,20 +24,6 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = i 
   end
 })
-local function pre_search(is_grep) 
-  local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
-  if vim.bo.filetype == "netrw" then 
-    path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
-  end 
-  for i=1,#exc do 
-    if is_grep then 
-      table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) 
-    else 
-      table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) 
-    end 
-  end 
-  return path, table.concat(ex, " ") 
-end
 local function qf() 
   local items = {} 
   for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
@@ -75,14 +61,22 @@ vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " },
 end) end)
 vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, 
   function(p) if p then 
-    local path, ex = pre_search(true) 
-    ext(string.format("grep -IEnr %s '%s' %s", ex, p, path)) qf()
+    local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
+    if vim.bo.filetype == "netrw" then 
+      path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
+    end 
+    for i=1,#exc do table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) end 
+    ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path)) qf()
   end 
 end) end)
 vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, 
   function(p) if p then 
-    local path, ex = pre_search(false) 
-    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), ex, p))
+  local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
+  if vim.bo.filetype == "netrw" then 
+    path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
+  end 
+  for i=1,#exc do table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end 
+    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), table.concat(ex, " "), p))
     qf() 
     vim.cmd("cclose") 
   end
