@@ -67,7 +67,6 @@ local function ext(c)
 end
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>") 
-vim.keymap.set("n", "<leader>d", ":bd<cr>")
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then ext(c) end end) end)
