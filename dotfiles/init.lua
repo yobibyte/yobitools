@@ -1,5 +1,4 @@
 vim.g.mapleader      = " "
-vim.g.maplocalleader = " "
 vim.o.undofile       = true   
 vim.o.smartcase      = true
 vim.o.ignorecase     = true   
@@ -24,24 +23,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = i 
   end
 })
-local function qf() 
-  local items = {} 
-  for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
-    if line ~= "" then 
-      local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
-      if f and ln then 
-        table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
-      else 
-        local ln, txt = line:match("^(%d+):(.*)$") 
-        table.insert(items, { filename = vim.fn.bufname("#"), lnum = ln, text = txt, }) 
-      end 
-    end 
-  end 
-  vim.api.nvim_buf_delete(0, { force = true })
-  vim.fn.setqflist(items, "r")
-  vim.cmd("copen | cc")  
-end
-local function ext(c) 
+local function ext(c, qf) 
   o = vim.fn.systemlist(c) 
   if o and #o > 0 then 
     vim.cmd("vnew") 
@@ -49,8 +31,23 @@ local function ext(c)
     vim.bo.buftype = "nofile" 
     vim.bo.bufhidden = "wipe" 
     vim.bo.swapfile = false 
-  end 
-end
+    if qf then 
+      local items = {} 
+      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
+        if line ~= "" then 
+          local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
+          if f and ln then 
+            table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
+          else 
+            local ln, txt = line:match("^(%d+):(.*)$") 
+            table.insert(items, { filename = vim.fn.bufname("#"), lnum = ln, text = txt, }) 
+          end 
+        end 
+      end 
+      vim.api.nvim_buf_delete(0, { force = true })
+      vim.fn.setqflist(items, "r")
+      vim.cmd("copen | cc")  
+end end end
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>") 
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
@@ -65,7 +62,7 @@ vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, func
       path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
     end 
     for i=1,#exc do table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) end 
-    ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path)) qf()
+    ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true)
 end end) end)
 vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
@@ -73,8 +70,7 @@ vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, func
     path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
   end 
   for i=1,#exc do table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end 
-    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), table.concat(ex, " "), p))
-    qf() 
+    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), table.concat(ex, " "), p), true)
     vim.cmd("cclose") 
 end end) end)
 vim.keymap.set("n", "<leader>j", function() 
