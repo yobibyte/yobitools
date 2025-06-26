@@ -57,20 +57,17 @@ vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then ext(c) end end) end)
 vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " }, 
-  function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(0))) end 
+  function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.fn.bufname("%"))) end
 end) end)
-vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, 
-  function(p) if p then 
+vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
     local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
     if vim.bo.filetype == "netrw" then 
       path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
     end 
     for i=1,#exc do table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) end 
     ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path)) qf()
-  end 
-end) end)
-vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, 
-  function(p) if p then 
+end end) end)
+vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
   if vim.bo.filetype == "netrw" then 
     path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
@@ -79,8 +76,7 @@ vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " },
     ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), table.concat(ex, " "), p))
     qf() 
     vim.cmd("cclose") 
-  end
-end) end)
+end end) end)
 vim.keymap.set("n", "<leader>j", function() 
   if vim.bo.filetype == "rust" then 
     vim.cmd("edit " .. vim.fn.systemlist("find " .. (os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo"))  .. "/registry/src  -maxdepth 1 -mindepth 1 ")[1])
