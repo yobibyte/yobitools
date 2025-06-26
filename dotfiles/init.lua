@@ -79,7 +79,7 @@ vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, func
 end end) end)
 vim.keymap.set("n", "<leader>j", function() 
   if vim.bo.filetype == "rust" then 
-    vim.cmd("edit " .. vim.fn.systemlist("find " .. (os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo"))  .. "/registry/src  -maxdepth 1 -mindepth 1 ")[1])
+    vim.cmd("edit " .. vim.fn.system("find " .. (os.getenv("CARGO_HOME") or (os.getenv("HOME") .. "/.cargo"))  .. "/registry/src  -maxdepth 1 -mindepth 1 -print -quit"))
   else 
     vim.cmd("edit " .. vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'") :gsub("%s+$", "") .. "/.") 
   end 
