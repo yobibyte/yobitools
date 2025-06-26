@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd("FileType",     { callback = function() local i = 4 
 local function pre_search(is_grep) local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} if vim.bo.filetype == "netrw" then path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }  end 
   for i=1,#exc do if is_grep then table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) else table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end end return path, table.concat(ex, " ") end
 local function qf() local items = {} for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do if line ~= "" then local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
-  if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) else local ln, txt = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname(vim.fn.bufnr("#")), lnum = ln, text = txt, }) end end end 
+  if f and ln then table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) else local ln, txt = line:match("^(%d+):(.*)$") table.insert(items, { filename = vim.fn.bufname("#"), lnum = ln, text = txt, }) end end end 
   vim.api.nvim_buf_delete(0, { force = true }) vim.fn.setqflist(items, "r") vim.cmd("copen | cc")  end
 local function ext(c) o = vim.fn.systemlist(c) if o and #o > 0 then vim.cmd("vnew") vim.api.nvim_buf_set_lines(0, 0, -1, false, o) vim.bo.buftype = "nofile" vim.bo.bufhidden = "wipe" vim.bo.swapfile = false end end
 vim.keymap.set("n", "<leader>x",  qf)
