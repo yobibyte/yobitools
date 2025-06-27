@@ -16,12 +16,8 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function()
     else                               vim.b._reg_dir = vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") end
     if vim.bo.filetype == "netrw" then vim.b._search_path, excs = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
     else                               vim.b._search_path, excs = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" } end
-    local find_excs, grep_excs = {}, {}
-    for i=1,#excs do 
-      table.insert(find_excs, string.format("-path '*%s*' -prune -o", excs[i]))
-      table.insert(grep_excs, string.format("--exclude-dir='%s'", excs[i])) end
-    vim.b._f_excs = table.concat(find_excs, " ")
-    vim.b._g_excs = table.concat(grep_excs, " ")
+    vim.b._f_excs = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
+    vim.b._g_excs = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
 end })
 local function ext(c, novs) 
   o = vim.fn.systemlist(c) 
@@ -42,5 +38,4 @@ vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, func
   if ext(string.format("grep -IEnr %s '%s' %s", vim.b._g_excs, p, vim.b._search_path), true) then vim.cmd("cgetbuffer | bd | copen | cc") end end end) end)
 vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(vim.b._search_path), vim.b._f_excs, p), true)
-  local l = vim.api.nvim_buf_get_lines(0, 0, -1, false) 
-  if #l == 1 then vim.cmd("edit " .. vim.fn.fnameescape(l[1])) end end end) end)
+  local l = vim.api.nvim_buf_get_lines(0, 0, -1, false) if #l == 1 then vim.cmd("edit " .. vim.fn.fnameescape(l[1])) end end end) end)
