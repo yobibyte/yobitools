@@ -48,15 +48,7 @@ vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, func
     if vim.bo.filetype == "netrw" then path, exc = vim.b.netrw_curdir, net_exc end 
     for i=1,#exc do table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) end 
     if ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true) then
-      local items = {} 
-      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
-        local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
-        if f and ln then 
-          table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
-      end end 
-      vim.api.nvim_buf_delete(0, { force = true })
-      vim.fn.setqflist(items, "r")
-      vim.cmd("copen | cc")  
+      vim.cmd("cgetbuffer | bd | copen | cc")  
 end end end) end)
 vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   local path, exc, ex = vim.fn.getcwd(), def_exc, {} 
