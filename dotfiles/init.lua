@@ -1,4 +1,3 @@
-vim.g.mapleader   = " "
 vim.o.undofile    = true   
 vim.opt.expandtab = true   
 vim.o.clipboard   = "unnamedplus"
@@ -22,13 +21,13 @@ local function ext(c, novs)
     vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
     vim.bo.buftype, vim.bo.bufhidden, vim.bo.swapfile = "nofile", "wipe", false
     return true end
-vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
-vim.keymap.set("n", "<leader>j", function() vim.cmd("edit " .. vim.b._reg_dir) end)
-vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
-vim.keymap.set("n", "<leader>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then ext(c) end end) end)
-vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " }, function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.fn.bufname("%"))) end end) end)
-vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
+vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
+vim.keymap.set("n", "<space>j", function() vim.cmd("edit " .. vim.b._reg_dir) end)
+vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
+vim.keymap.set("n", "<space>c", function() vim.ui.input({ prompt = "> " }, function(c) if c then ext(c) end end) end)
+vim.keymap.set("n", "<space>b", function() vim.ui.input({ prompt = "> " }, function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.fn.bufname("%"))) end end) end)
+vim.keymap.set("n", "<space>g", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   if ext(string.format("grep -IEnr %s '%s' %s", vim.b._g_excs, p, vim.b._search_path), true) then vim.cmd("cgetbuffer | bd | copen | cc") end end end) end)
-vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
+vim.keymap.set("n", "<space>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
   ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(vim.b._search_path), vim.b._f_excs, p), true)
   local l = vim.api.nvim_buf_get_lines(0, 0, -1, false) if #l == 1 then vim.cmd("edit " .. vim.fn.fnameescape(l[1])) end end end) end)
