@@ -25,10 +25,10 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = i 
   end
 })
-local function ext(c) 
+local function ext(c, novs) 
   o = vim.fn.systemlist(c) 
   if o and #o > 0 then 
-    vim.cmd("vnew") 
+    vim.cmd(novs and "enew" or "vnew") 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
     vim.bo.buftype = "nofile" 
     vim.bo.bufhidden = "wipe" 
@@ -68,7 +68,7 @@ vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, func
     path, exc = vim.b.netrw_curdir, netrw_exclude
   end 
   for i=1,#exc do table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end 
-  ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(path), table.concat(ex, " "), p))
+  ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(path), table.concat(ex, " "), p), true)
 end end) end)
 vim.keymap.set("n", "<leader>j", function() 
   if vim.bo.filetype == "rust" then 
