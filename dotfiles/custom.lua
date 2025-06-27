@@ -95,3 +95,35 @@ vim.keymap.set("n", "<C-k>", ":move .-2<CR>")
 vim.keymap.set("v", "<C-j>", ":move '>+1<CR>gv")
 vim.keymap.set("v", "<C-k>", ":move '<-2<CR>gv")
 vim.keymap.set("n", "<leader>gc", function() extc("git diff --name-only --diff-filter=U") qf() end)
+
+vim.keymap.set({ "n", "x" }, "<space>/", function()
+  local cs = vim.bo.commentstring:match("^(.*)%%s")
+  if not cs or cs == "" then return end
+
+  local s_row, e_row = vim.fn.line("."), vim.fn.line(".")
+  if vim.fn.mode() ~= "n" then
+    s_row, e_row = vim.fn.line("v"), vim.fn.line(".")
+    if s_row > e_row then s_row, e_row = e_row, s_row end
+  end
+
+  local prefix = vim.trim(cs)
+  local lines = {}
+  local all_commented = true
+
+  for i = s_row, e_row do
+    local line = vim.fn.getline(i)
+    local uncommented = line:gsub("^%s*" .. vim.pesc(prefix) .. "%s?", "", 1)
+    if uncommented == line then all_commented = false end
+    table.insert(lines, { i, line, uncommented })
+  end
+
+  for _, entry in ipairs(lines) do
+    local i, line, uncommented = unpack(entry)
+    if all_commented then
+      vim.fn.setline(i, uncommented)
+    else
+      vim.fn.setline(i, prefix .. " " .. line)
+    end
+  end
+end, { desc = "Toggle comment using commentstring" })
+
