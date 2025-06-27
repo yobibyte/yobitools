@@ -9,9 +9,7 @@ vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end, group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }), pattern = "*" })
 vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() 
     local i = 4 for _, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, 50, false)) do local c = l:match("^(%s+)%S") if c then i = math.min(i, #c) end end 
-    vim.opt_local.shiftwidth=i 
-    vim.opt_local.tabstop=i 
-    vim.opt_local.softtabstop = i 
+    vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = i, i, i 
     if vim.bo.filetype == "rust"  then vim.b._reg_dir = vim.fn.system("find $(echo ${CARGO_HOME:-$HOME/.cargo})/registry/src  -maxdepth 1 -mindepth 1 -print -quit")
     else                               vim.b._reg_dir = vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") end
     if vim.bo.filetype == "netrw" then vim.b._search_path, excs = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
@@ -24,9 +22,7 @@ local function ext(c, novs)
   if o and #o > 0 then 
     vim.cmd(novs and "enew" or "vnew") 
     vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
-    vim.bo.buftype = "nofile" 
-    vim.bo.bufhidden = "wipe" 
-    vim.bo.swapfile = false 
+    vim.bo.buftype, vim.bo.bufhidden, vim.bo.swapfile = "nofile", "wipe", false
     return true end
   return false end
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
