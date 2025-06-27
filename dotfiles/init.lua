@@ -14,15 +14,14 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function()
     excs = (vim.bo.filetype == "netrw") and { ".git", "*.egg-info", "__pycache__", "wandb", "target" } or { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
     vim.b._f_excs = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
     vim.b._g_excs = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
-    if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end
-end })
+    if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end })
 local function ext(c, novs) 
-  o = vim.fn.systemlist(c) 
-  if not (o and #o > 0) then return false end
-  vim.cmd(novs and "enew" or "vnew") 
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
-  vim.bo.buftype, vim.bo.bufhidden, vim.bo.swapfile = "nofile", "wipe", false
-  return true end
+    o = vim.fn.systemlist(c) 
+    if not (o and #o > 0) then return false end
+    vim.cmd(novs and "enew" or "vnew") 
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
+    vim.bo.buftype, vim.bo.bufhidden, vim.bo.swapfile = "nofile", "wipe", false
+    return true end
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
 vim.keymap.set("n", "<leader>j", function() vim.cmd("edit " .. vim.b._reg_dir) end)
 vim.keymap.set('n', '<leader>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
