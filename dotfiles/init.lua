@@ -69,7 +69,7 @@ vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, func
     path, exc = vim.b.netrw_curdir, netrw_exclude
   end 
   for i=1,#exc do table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end 
-    ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(path), table.concat(ex, " "), p))
+  ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(path), table.concat(ex, " "), p))
 end end) end)
 vim.keymap.set("n", "<leader>j", function() 
   if vim.bo.filetype == "rust" then 
