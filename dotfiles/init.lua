@@ -54,11 +54,10 @@ vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, func
     if ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true) then
       local items = {} 
       for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
-        if line ~= "" then 
-          local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
-          if f and ln then 
-            table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
-      end end end 
+        local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
+        if f and ln then 
+          table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
+      end end 
       vim.api.nvim_buf_delete(0, { force = true })
       vim.fn.setqflist(items, "r")
       vim.cmd("copen | cc")  
