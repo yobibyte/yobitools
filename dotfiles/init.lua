@@ -6,6 +6,8 @@ vim.opt.expandtab    = true
 vim.o.clipboard      = "unnamedplus"
 vim.cmd("syntax off | colorscheme retrobox")
 vim.api.nvim_set_hl(0, "Normal", { fg = "#ffaf00" })
+local default_exclude = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
+local netrw_exclude   = { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function() vim.highlight.on_yank() end,
   group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
@@ -23,7 +25,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = i 
   end
 })
-local function ext(c, qf) 
+local function ext(c) 
   o = vim.fn.systemlist(c) 
   if o and #o > 0 then 
     vim.cmd("vnew") 
@@ -31,23 +33,10 @@ local function ext(c, qf)
     vim.bo.buftype = "nofile" 
     vim.bo.bufhidden = "wipe" 
     vim.bo.swapfile = false 
-    if qf then 
-      local items = {} 
-      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
-        if line ~= "" then 
-          local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
-          if f and ln then 
-            table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
-          else 
-            local ln, txt = line:match("^(%d+):(.*)$") 
-            table.insert(items, { filename = vim.fn.bufname("#"), lnum = ln, text = txt, }) 
-          end 
-        end 
-      end 
-      vim.api.nvim_buf_delete(0, { force = true })
-      vim.fn.setqflist(items, "r")
-      vim.cmd("copen | cc")  
-end end end
+    return true
+  end 
+  return false
+end
 vim.keymap.set("n", "<C-n>", ":cn<cr>")
 vim.keymap.set("n", "<C-p>", ":cp<cr>") 
 vim.keymap.set("n", "<leader><space>", ":ls<cr>:b ")
@@ -57,21 +46,30 @@ vim.keymap.set("n", "<leader>b", function() vim.ui.input({ prompt = "> " },
   function(p) if p then ext("grep -in '" .. p .. "' " .. vim.fn.shellescape(vim.fn.bufname("%"))) end
 end) end)
 vim.keymap.set("n", "<leader>g", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
-    local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
+    local path, exc, ex = vim.fn.getcwd(), default_exclude, {} 
     if vim.bo.filetype == "netrw" then 
-      path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
+      path, exc = vim.b.netrw_curdir, netrw_exclude
     end 
     for i=1,#exc do table.insert(ex, string.format("--exclude-dir='%s'", exc[i])) end 
-    ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true)
-end end) end)
+    if ext(string.format("grep -IEnr %s '%s' %s", table.concat(ex, " "), p, path), true) then
+      local items = {} 
+      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do 
+        if line ~= "" then 
+          local f, ln, txt = line:match("^([^:]+):(%d+):(.*)$")
+          if f and ln then 
+            table.insert(items, { filename = vim.fn.fnamemodify(f, ":p"), lnum = ln, text = txt, }) 
+      end end end 
+      vim.api.nvim_buf_delete(0, { force = true })
+      vim.fn.setqflist(items, "r")
+      vim.cmd("copen | cc")  
+end end end) end)
 vim.keymap.set("n", "<leader>f", function() vim.ui.input({ prompt = "> " }, function(p) if p then 
-  local path, exc, ex = vim.fn.getcwd(), { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv", }, {} 
+  local path, exc, ex = vim.fn.getcwd(), default_exclude, {} 
   if vim.bo.filetype == "netrw" then 
-    path, exc = vim.b.netrw_curdir, { ".git", "*.egg-info", "__pycache__", "wandb","target" }
+    path, exc = vim.b.netrw_curdir, netrw_exclude
   end 
   for i=1,#exc do table.insert(ex, string.format("-path '*%s*' -prune -o", exc[i])) end 
-    ext(string.format("find %s %s -path '*%s*' -print | awk '{ print $0 \":1: \" }'", vim.fn.shellescape(path), table.concat(ex, " "), p), true)
-    vim.cmd("cclose") 
+    ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.shellescape(path), table.concat(ex, " "), p))
 end end) end)
 vim.keymap.set("n", "<leader>j", function() 
   if vim.bo.filetype == "rust" then 
