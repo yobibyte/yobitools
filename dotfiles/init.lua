@@ -23,8 +23,7 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() t(
     vim.treesitter.stop() end})
 
 vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
-vim.keymap.set("n", "<space>j", function() vim.cmd("edit " .. vim.b._reg_dir) end)
-vim.keymap.set("n", "<space>r", function() vim.fn.setreg('+', vim.b._reg_dir) end)
+vim.keymap.set("n", "<space>j", function() vim.fn.setreg('+', vim.b._reg_dir) end)
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then ext(c) end end) end)
 vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then 
