@@ -9,11 +9,10 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() t(
     if vim.bo.filetype == "rust" then
         vim.b._reg_dir = vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/") end
     local excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
-    local sp = vim.b.netrw_curdir
+    vim.b._sp = vim.fn.shellescape(vim.b.netrw_curdir)
     if vim.bo.filetype ~= "netrw" then
         excs[#excs+1] = ".venv"
-        sp = vim.fn.getcwd() end
-    vim.b._sp = vim.fn.shellescape(sp)
+        vim.b._sp = vim.fn.shellescape(vim.fn.getcwd()) end
     vim.b._f_excs = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
     vim.b._g_excs = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
     if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end })
