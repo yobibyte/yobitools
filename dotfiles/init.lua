@@ -2,7 +2,10 @@ vim.o.undofile    = true
 vim.o.clipboard   = "unnamedplus"
 vim.opt.expandtab = true
 vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guibg=#282828")
+
 local excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
+local g_ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
+local f_ex = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
 
 function _G.t(n) 
     vim.opt_local.shiftwidth = n
@@ -28,8 +31,6 @@ vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+',
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then ext(c) end end) end)
 vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then 
-    local ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
-    ext(string.format("grep -IEnr %s '%s' %s", ex, p, vim.fn.getcwd()), true) end end) end)
+    ext(string.format("grep -IEnr %s '%s' %s", g_ex, p, vim.fn.getcwd()), true) end end) end)
 vim.keymap.set("n", "<space>f", function() vim.ui.input({}, function(p) if p then 
-    local ex = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
-    ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.getcwd(), ex, p)) end end) end)
+    ext(string.format("find %s %s -path '*%s*' -print ", vim.fn.getcwd(), f_ex, p)) end end) end)
