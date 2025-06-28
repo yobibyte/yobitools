@@ -5,12 +5,12 @@ vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guib
 local function t(n) vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = n, n, n end
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank() end})
 vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() t(4)
-    if vim.bo.filetype == "rust"  then vim.b._reg_dir = vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")
+    if vim.bo.filetype == "rust" then
+        vim.b._reg_dir = vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")
     else vim.b._reg_dir = vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") end
-    if vim.bo.filetype == "netrw" then vim.b._search_path = vim.b.netrw_curdir
-      excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
-    else vim.b._search_path = vim.fn.getcwd()
-      excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" } end
+    local excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target" }
+    if vim.bo.filetype ~= "netrw" then excs[#excs+1] = ".venv" end
+    vim.b._search_path = vim.bo.filetype=="netrw" and vim.b.netrw_curdir or vim.fn.getcwd()
     vim.b._f_excs = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
     vim.b._g_excs = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
     if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end })
