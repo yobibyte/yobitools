@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() t(
     local excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
     vim.b._f_ex = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
     vim.b._g_ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
-    if vim.treesitter and vim.treesitter.stop then vim.treesitter.stop() end end })
+    vim.treesitter.stop() end})
 
 vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
 vim.keymap.set("n", "<space>j", function() vim.cmd("edit " .. vim.b._reg_dir) end)
