@@ -3,8 +3,6 @@ vim.o.clipboard   = "unnamedplus"
 vim.opt.expandtab = true
 vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guibg=#282828")
 
-local pdir = vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "") 
-local rdir = vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")
 function _G.t(n) vim.opt_local.shiftwidth, vim.opt_local.tabstop, vim.opt_local.softtabstop = n, n, n end
 local function ext(c, qf)
     o = vim.fn.systemlist(c) 
@@ -22,8 +20,10 @@ vim.api.nvim_create_autocmd({"BufEnter", "FileType"}, { callback = function() t(
     vim.treesitter.stop() end})
 
 vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
-vim.keymap.set("n", "<space>r", function() vim.fn.setreg('+', rdir) end)
-vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+', pdir) end)
+vim.keymap.set("n", "<space>r", function()
+    vim.fn.setreg('+', vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")) end)
+vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+',
+    vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "")) end)
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then ext(c) end end) end)
 vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then 
