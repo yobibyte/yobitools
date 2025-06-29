@@ -18,14 +18,14 @@ local function ext(c, qf)
     vim.bo.swapfile = false
     if qf then vim.cmd("cgetbuffer | bd | copen | cc") end end
 
-function search(p) 
-    if vim.fn.executable("rg") then 
-        ext("rg --vimgrep -in " .. p, true)
-    else
+local search
+if vim.fn.executable("rg") then
+    search = function(p) ext("rg --vimgrep -in " .. p, true) end
+else
+    search = function(p)
         local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
         ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
-        ext(string.format("grep -IEnr %s '%s' %s", ex, p, vim.fn.getcwd()), true) 
-    end end
+        ext(string.format("grep -IEnr %s '%s' %s", ex, p, vim.fn.getcwd()), true) end end
 
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank()    end})
 vim.api.nvim_create_autocmd("BufEnter",     { callback = function() vim.treesitter.stop() t(4) end})
