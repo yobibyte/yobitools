@@ -14,7 +14,7 @@ if vim.fn.executable("rg") then
     vim.opt.grepprg = "rg --vimgrep -in " .. exc .. " -- $*"
 else
     local exc = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
-    vim.opt.grepprg = "grep -IEnr " .. exc .. " $* " .. vim.fn.getcwd()
+    vim.opt.grepprg = "grep -IEnr " .. exc .. " $* " .. vim.fn.getcwd() end
 
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank()    end})
 vim.api.nvim_create_autocmd("BufEnter",     { callback = function() vim.treesitter.stop() t(4) end})
