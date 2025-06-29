@@ -3,9 +3,9 @@ vim.o.clipboard   = "unnamedplus"
 vim.opt.expandtab = true
 vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guibg=#282828")
 
-local excs = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
-local g_ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, excs), " ")
-local f_ex = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, excs), " ")
+local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
+local g_ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
+local f_ex = table.concat(vim.tbl_map(function(e) return "-path '*" .. e .. "*' -prune -o" end, ex), " ")
 
 function _G.t(n) 
     vim.opt_local.shiftwidth = n
