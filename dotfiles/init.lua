@@ -3,9 +3,6 @@ vim.o.clipboard   = "unnamedplus"
 vim.opt.expandtab = true
 vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guibg=#282828")
 
-local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
-ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
-
 function _G.t(n) 
     vim.opt_local.shiftwidth = n
     vim.opt_local.tabstop = n 
@@ -21,6 +18,15 @@ local function ext(c, qf)
     vim.bo.swapfile = false
     if qf then vim.cmd("cgetbuffer | bd | copen | cc") end end
 
+function search(p) 
+    if vim.fn.executable("rg") then 
+        ext("rg --vimgrep -in " .. p, true)
+    else
+        local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
+        ex = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
+        ext(string.format("grep -IEnr %s '%s' %s", ex, p, vim.fn.getcwd()), true) 
+    end end
+
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank()    end})
 vim.api.nvim_create_autocmd("BufEnter",     { callback = function() vim.treesitter.stop() t(4) end})
 
@@ -31,5 +37,4 @@ vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+',
     vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "")) end)
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then ext(c) end end) end)
-vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then 
-    ext(string.format("grep -IEnr %s '%s' %s", ex, p, vim.fn.getcwd()), true) end end) end)
+vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then search(p) end end) end)
