@@ -31,10 +31,8 @@ vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highligh
 vim.api.nvim_create_autocmd("BufEnter",     { callback = function() vim.treesitter.stop() t(4) end})
 
 vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
-vim.keymap.set("n", "<space>r", function()
-    vim.fn.setreg('+', vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")) end)
-vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+',
-    vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "")) end)
+vim.keymap.set("n", "<space>r", function() vim.fn.setreg('+', vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src/")) end)
+vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+', vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "")) end)
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then ext(c) end end) end)
 vim.keymap.set("n", "<space>g", function() vim.ui.input({}, function(p) if p then search(p) end end) end)
