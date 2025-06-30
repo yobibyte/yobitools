@@ -1,28 +1,20 @@
 vim.o.undofile    = true
 vim.o.clipboard   = "unnamedplus"
 vim.opt.expandtab = true
+vim.opt.softtabstop = -1
+vim.opt.shiftwidth = 4
 vim.cmd("syntax off | colorscheme retrobox | highlight Normal guifg=#ffaf00 guibg=#282828")
-vim.opt_local.shiftwidth = 4
-vim.opt_local.tabstop = 4
-vim.opt_local.softtabstop = 4
-
-local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
-local exc = table.concat( vim.tbl_map(function(dir) return "--glob='!" .. dir .. "/**'" end, ex), " ")
-vim.opt.grepprg = "rg --vimgrep --no-ignore-parent -in " .. exc .. " -- $*"
-
 vim.api.nvim_create_autocmd("TextYankPost", { callback = function() vim.highlight.on_yank()    end})
 vim.api.nvim_create_autocmd("BufEnter",     { callback = function() vim.treesitter.stop() end})
-
+vim.opt.grepprg = "rg --vimgrep --no-ignore-parent --glob='!wandb/**' --glob='!target/**' --glob='!.venv/**' -- $*"
 vim.keymap.set("n", "<space>l", ":ls<cr>:b ")
 vim.keymap.set("n", "<space>r", function() vim.fn.setreg('+', vim.fn.system("echo ${CARGO_HOME:-$HOME/.cargo}/registry/src")) end)
 vim.keymap.set("n", "<space>p", function() vim.fn.setreg('+', vim.fn.system("python3 -c 'import site; print(site.getsitepackages()[0])'"):gsub("%s+$", "")) end)
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c then 
-    o = vim.fn.systemlist(c) 
-    if not (o and #o > 0) then return end
+    o = vim.fn.systemlist(c) if not (o and #o > 0) then return end
     vim.cmd("vnew") 
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, o) 
     vim.bo.buftype = "nofile"
     vim.bo.bufhidden = "wipe" 
     vim.bo.swapfile = false
-end end) end)
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, o) end end) end)
