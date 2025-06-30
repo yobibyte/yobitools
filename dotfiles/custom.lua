@@ -134,4 +134,4 @@ else
     local exc = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
     vim.opt.grepprg = "grep -IEnr " .. exc .. " $* " .. vim.fn.getcwd() end
 
-
+vim.opt.grepprg = "rg --vimgrep --no-ignore-parent --glob='!.git/**' --glob='!*.egg-info/**' --glob='!__pycache__/**' --glob='!wandb/**' --glob='!target/**' --glob='!.venv/**' -- $*"
