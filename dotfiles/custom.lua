@@ -126,4 +126,12 @@ vim.keymap.set({ "n", "x" }, "<space>/", function()
     end
   end
 end, { desc = "Toggle comment using commentstring" })
+local ex = { ".git", "*.egg-info", "__pycache__", "wandb", "target", ".venv" }
+if vim.fn.executable("rg") then
+    local exc = table.concat( vim.tbl_map(function(dir) return "--glob='!" .. dir .. "/**'" end, ex), " ")
+    vim.opt.grepprg = "rg --vimgrep --no-ignore-parent -in " .. exc .. " -- $*"
+else
+    local exc = table.concat(vim.tbl_map(function(e) return "--exclude-dir='" .. e .. "'" end, ex), " ")
+    vim.opt.grepprg = "grep -IEnr " .. exc .. " $* " .. vim.fn.getcwd() end
+
 
