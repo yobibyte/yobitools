@@ -32,7 +32,6 @@ alias def="source ~/.venv/bin/activate"
 alias t='yt-dlp -P ~/videos/inbox'
 alias eb='vim /home/yobibyte/.zshrc'
 alias sb='source /home/yobibyte/.zshrc'
-alias reader='go run ~/src/reader/reader.go'
 
 # dev
 alias gp='git push'
@@ -68,3 +67,4 @@ alias save="monolith"
 alias agi='bash ~/src/google_gemma-3-4b-it-Q6_K.llamafile'
 alias pydocs='vim /home/yobibyte/dev/docs/cpython'
 # alias zig='~/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f/zig'
+alias tr="python -m http.server 8000"
