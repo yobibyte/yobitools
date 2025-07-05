@@ -7,4 +7,3 @@ vim.opt.softtabstop = -1
 vim.cmd("syntax off | highlight Normal guifg=#ffaf00 guibg=#282828")
 vim.keymap.set('n', '<space>y', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
 vim.keymap.set("n", "<space>c", function() vim.cmd("noswapfile enew | setlocal buftype=nofile bufhidden=wipe | call feedkeys(':r !', 'n')") end)
-
