@@ -27,11 +27,12 @@ export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
 alias rtd="~/dev/rtd/target/debug/rtd"
 alias xxclip="xclip -sel clipboard"
-alias vim='nvim'
+alias vim='vim'
 alias def="source ~/.venv/bin/activate"
 alias t='yt-dlp -P ~/videos/inbox'
 alias eb='vim /home/yobibyte/.zshrc'
 alias sb='source /home/yobibyte/.zshrc'
+alias vim='nvim'
 
 # dev
 alias gp='git push'
