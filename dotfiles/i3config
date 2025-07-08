@@ -149,16 +149,12 @@ floating_maximum_size 1200 x 800
 exec --no-startup-id feh  --bg-fill ~/pics/wallpapers/ox.jpg
 
 ###### workspace handling #####
-set $ws2 2:brave
-set $ws3 3:pics
-set $ws5 5:anki
-set $ws6 6:msg
-
 assign [class="Brave"] $ws2
 assign [class="Librewolf"] $ws2
 assign [class="Geeqie"] $ws3
 assign [class="Anki"] $ws5
 assign [class="Telegram"] $ws6
+assign [class="Zathura"] $ws9
 
 bindsym $mod+Shift+greater move container to output up
 bindsym $mod+Shift+less move container to output down

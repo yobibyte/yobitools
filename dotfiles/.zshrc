@@ -60,7 +60,7 @@ alias d='w3m duckduckgo.com'
 alias p='nvim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 alias jb="just build"
-bindkey -s '^F' 'rga-fzf\n'
+bindkey -s '^F' 'vim $(fzf)\n'
 alias save="monolith"
 
 # esc-M in w3m to add a link here
