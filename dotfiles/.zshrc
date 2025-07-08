@@ -25,6 +25,7 @@ source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
 export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
+alias vim="nvim"
 alias rtd="~/dev/rtd/target/debug/rtd"
 alias xxclip="xclip -sel clipboard"
 alias def="source ~/.venv/bin/activate"
