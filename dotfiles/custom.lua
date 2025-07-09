@@ -139,3 +139,5 @@ vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c and
   vim.cmd("noswapfile vnew | setlocal buftype=nofile bufhidden=wipe") 
   vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(c)) end end) end)
 function _G.f(cmd_arg) return vim.fn.systemlist("rg --files | rg " .. cmd_arg) end vim.o.findfunc = 'v:lua.f'
+vim.cmd("syntax off | highlight Normal guifg=#ffaf00 guibg=#282828")
+vim.cmd("syntax off | highlight Normal guibg=#3b224c guifg=#a4a0e8")
