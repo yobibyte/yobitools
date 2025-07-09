@@ -34,14 +34,6 @@ alias t='yt-dlp -P ~/videos/inbox'
 alias eb='vim /home/yobibyte/.zshrc'
 alias sb='source /home/yobibyte/.zshrc'
 
-# dev
-alias gp='git push'
-alias check='cargo check'
-alias build='cargo build'
-alias run='cargo run'
-alias clippy='cargo clippy'
-alias fmt='cargo fmt'
-
 archive() {
     mv $1 ~/archive/2025
 }
@@ -60,7 +52,6 @@ alias nb='newsboat'
 alias d='w3m duckduckgo.com'
 alias p='nvim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
-alias jb="just build"
 bindkey -s '^F' 'vim $(fzf)\n'
 alias save="monolith"
 
