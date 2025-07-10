@@ -52,7 +52,8 @@ alias nb='newsboat'
 alias d='w3m duckduckgo.com'
 alias p='nvim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
-bindkey -s '^F' 'vim $(fzf)\n'
+bindkey -s '^E' 'vim $(fzf)\n'
+bindkey -s '^F' '~/scripts/fzfclip.sh\n'
 alias save="monolith"
 
 # esc-M in w3m to add a link here
