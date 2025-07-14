@@ -124,7 +124,13 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         status_command i3blocks -c ~/.config/i3blocks/config
+        mode invisible
 }
+
+bindsym $mod+Shift+m bar mode invisible 
+bindsym $mod+Shift+n bar mode dock
+exec bar mode invisible
+exec --no-startup-id bar mode invisible
 
 # yobibyte
 # bindsym $mod+Shift+p exec i3lock -i ~/src/windfarm.png
@@ -171,7 +177,7 @@ bindsym $mod+minus scratchpad show
 exec --no-startup-id volumeicon 
 exec --no-startup-id blueman-applet 
 
-bindsym $mod+Shift+m exec vlc https://somafm.com/gsclassic130.pls --qt-start-minimized 
+bindsym $mod+Shift+s exec mpv https://somafm.com/gsclassic130.pls
 bindsym $mod+Shift+a exec pa
 bindsym $mod+Shift+d exec pd 
 bindsym $mod+Shift+v exec pl

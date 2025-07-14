@@ -62,3 +62,5 @@ alias agi='bash ~/src/google_gemma-3-4b-it-Q6_K.llamafile'
 alias pydocs='vim /home/yobibyte/dev/docs/cpython'
 # alias zig='~/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f/zig'
 alias tr="python -m http.server 8000"
+
+alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"

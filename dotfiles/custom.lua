@@ -117,6 +117,7 @@ vim.keymap.set({ "n", "x" }, "<space>/", function()
     table.insert(lines, { i, line, uncommented })
   end
 
+
   for _, entry in ipairs(lines) do
     local i, line, uncommented = unpack(entry)
     if all_commented then
@@ -141,3 +142,12 @@ vim.keymap.set("n", "<space>c", function() vim.ui.input({}, function(c) if c and
 function _G.f(cmd_arg) return vim.fn.systemlist("rg --files | rg " .. cmd_arg) end vim.o.findfunc = 'v:lua.f'
 vim.cmd("syntax off | highlight Normal guifg=#ffaf00 guibg=#282828")
 vim.cmd("syntax off | highlight Normal guibg=#3b224c guifg=#a4a0e8")
+require('vim._extui').enable({
+ enable = true, -- Whether to enable or disable the UI.
+ msg = { -- Options related to the message module.
+   ---@type 'cmd'|'msg' Where to place regular messages, either in the
+   ---cmdline or in a separate ephemeral message window.
+   target = 'msg',
+   timeout = 4000, -- Time a message is visible in the message window.
+ },
+})
