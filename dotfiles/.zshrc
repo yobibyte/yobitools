@@ -48,7 +48,7 @@ alias b='w3m $(xclip -o -sel clip)'
 alias n='~/scripts/n.sh'
 alias v='cd ~/yobivault && vim'
 alias pics='~/scripts/pics.sh'
-alias wk='wiki-tui'
+alias wk='function _wiki(){ w3m -dump "https://en.wikipedia.org/wiki/${*// /_}" | nvim; }; _wiki'
 alias nb='newsboat'
 alias d='w3m duckduckgo.com'
 alias p='nvim ~/yobivault/papers.md'
@@ -64,3 +64,4 @@ alias pydocs='vim /home/yobibyte/dev/docs/cpython'
 alias tr="python -m http.server 8000"
 
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
+alias s="~/scripts/session.sh"
