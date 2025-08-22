@@ -1,7 +1,3 @@
-set undofile
-set clipboard=unnamedplus
-set expandtab
-set shiftwidth=4
-set softtabstop=-1
-syntax off | highlight Normal guifg=#a89983 guibg=#282828
+set undofile clipboard=unnamedplus expandtab shiftwidth=4 softtabstop=-1 termguicolors
 packadd comment | filetype plugin on
+highlight Normal guifg=#a89983 guibg=#282828
