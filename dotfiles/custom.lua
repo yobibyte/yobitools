@@ -151,3 +151,6 @@ require('vim._extui').enable({
    timeout = 4000, -- Time a message is visible in the message window.
  },
 })
+vim.keymap.set('n', '<space>y', "<cmd>let @+ = expand('%:p')<CR>")
+vim.keymap.set("n", "<space>c", function() vim.cmd("nos ene | setl bt=nofile bh=wipe") vim.cmd("r !" .. vim.fn.input("")) vim.cmd("1d") end)
+vim.api.nvim_create_autocmd("BufEnter", {callback = function() vim.treesitter.stop() end})
