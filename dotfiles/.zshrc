@@ -13,7 +13,6 @@ bindkey '^[[3~' delete-char
 bindkey "\033[1~" beginning-of-line
 bindkey "\033[4~" end-of-line
 
-# PS1='%F{blue}%~ %(?.%F{green}.%F{red})%#%f '
 PS1='%F{#a89983}%~ %#%f '
 
 alias open='xdg-open'
@@ -26,10 +25,9 @@ source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
 export EDITOR="nvim"
 export MANPAGER="nvim +Man!"
-alias vi="/usr/bin/vim"
 alias vim="nvim"
 alias rtd="~/dev/rtd/target/debug/rtd"
-alias xxclip="xclip -sel clipboard"
+alias xx="xsel -b -i"
 alias def="source ~/.venv/bin/activate"
 alias t='yt-dlp -P ~/videos/inbox'
 alias eb='vim /home/yobibyte/.zshrc'
@@ -60,7 +58,6 @@ alias save="monolith"
 # esc-M in w3m to add a link here
 alias agi='bash ~/src/google_gemma-3-4b-it-Q6_K.llamafile'
 alias pydocs='vim /home/yobibyte/dev/docs/cpython'
-# alias zig='~/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f/zig'
 alias tr="python -m http.server 8000"
 
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
