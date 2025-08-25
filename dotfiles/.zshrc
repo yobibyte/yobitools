@@ -13,7 +13,7 @@ bindkey '^[[3~' delete-char
 bindkey "\033[1~" beginning-of-line
 bindkey "\033[4~" end-of-line
 
-PS1='%F{#a89983}%~ %#%f '
+PS1='%F{#d78700}%~ %#%f '
 
 alias open='xdg-open'
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cabal/bin:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f:$PATH
