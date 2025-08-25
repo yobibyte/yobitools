@@ -61,3 +61,4 @@ alias pydocs='vim /home/yobibyte/dev/docs/cpython'
 alias tr="python -m http.server 8000"
 
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
+alias y="~/dev/y/zig-out/bin/y"
