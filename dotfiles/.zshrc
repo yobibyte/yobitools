@@ -3,11 +3,9 @@ HISTSIZE=1000000
 SAVEHIST=1000000
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
-
 zstyle :compinstall filename '/home/yobibyte/.zshrc'
 autoload -Uz compinit
 compinit
-
 bindkey -v
 bindkey '^[[3~' delete-char
 bindkey "\033[1~" beginning-of-line
@@ -16,7 +14,7 @@ bindkey "\033[4~" end-of-line
 PS1='%F{#d78700}%~ %#%f '
 
 alias open='xdg-open'
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cabal/bin:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/src/zig-linux-x86_64-0.15.0-dev.621+a63f7875f:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cabal/bin:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$PATH
 
 kitty + complete setup zsh | source /dev/stdin
 
@@ -33,9 +31,7 @@ alias t='yt-dlp -P ~/videos/inbox'
 alias eb='vim /home/yobibyte/.zshrc'
 alias sb='source /home/yobibyte/.zshrc'
 
-archive() {
-    mv $1 ~/archive/2025
-}
+archive() { mv $1 ~/archive/2025 }
 
 export YDB_DIR=~/.ydb
 alias m='cd $HOME/Downloads;neomutt'
@@ -62,3 +58,5 @@ alias tr="python -m http.server 8000"
 
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
 alias y="~/dev/y/zig-out/bin/y"
+alias zig="~/src/zig-x86_64-linux-0.16.0-dev.27+83f773fc6/zig"
+alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && nvim <(w3m -dump -o display_url_number=1 "$url")'
