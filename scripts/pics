@@ -1,0 +1,3 @@
+#!/bin/bash
+mv "/run/media/yobibyte/RICOH GR/DCIM/100RICOH"/* ~/pics/gr
+sudo umount /run/media/yobibyte/RICOH\ GR

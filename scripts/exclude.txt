@@ -1,0 +1,15 @@
+/home/yobibyte/.cache/
+/dev/
+/proc/
+/sys/
+/tmp/
+/run/
+/mnt/
+/media/
+/lost+found
+/var/cache/
+/var/log/
+/home/yobibyte/.mozilla/
+/home/yobibyte/.cargo/
+/home/yobibyte/.thunderbird/
+/home/yobibyte/.config/Slack/

@@ -1,0 +1,3 @@
+python ~/scripts/pa.py $(xsel -b -o) pd # pd is to download as f.pdf.
+zathura ~/Downloads/f.pdf&
+

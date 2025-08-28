@@ -1,0 +1,4 @@
+FPATH="$(xsel -b -o)"
+echo $FPATH
+curl -F "file=@$FPATH" -F "copies=1" -F "pps=1" -F "page_from=" -F "page_to=" http://192.168.1.58:5000/
+

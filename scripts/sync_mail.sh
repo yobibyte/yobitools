@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# This script is used by systemd to sync the mail every 5 mins.
+# The service/timer are in ~/.config/systemd
+
+mw -Y
