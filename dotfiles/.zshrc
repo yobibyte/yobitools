@@ -35,13 +35,12 @@ archive() { mv $1 ~/archive/2025 }
 
 export YDB_DIR=~/.ydb
 alias m='cd $HOME/Downloads;neomutt'
-alias sm='mw -Y'
 alias c='calcurse'
 alias l='vim ~/sync/links.md'
 alias b='w3m $(xclip -o -sel clip)'
 alias n='~/scripts/n.sh'
 alias v='cd ~/yobivault && vim'
-alias pics='~/scripts/pics.sh'
+alias pics='~/scripts/pics'
 alias wk='function _wiki(){ w3m -dump "https://en.wikipedia.org/wiki/${*// /_}" | nvim; }; _wiki'
 alias nb='newsboat'
 alias d='w3m duckduckgo.com'
