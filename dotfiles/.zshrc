@@ -21,9 +21,8 @@ kitty + complete setup zsh | source /dev/stdin
 source ~/dev/z/z.sh
 source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
-export EDITOR="nvim"
-export MANPAGER="nvim +Man!"
-alias vim="nvim"
+export EDITOR="vim"
+export MANPAGER="vim +Man!"
 alias rtd="~/dev/rtd/target/debug/rtd"
 alias xx="xsel -b -i"
 alias def="source ~/.venv/bin/activate"
@@ -41,10 +40,9 @@ alias b='w3m $(xclip -o -sel clip)'
 alias n='~/scripts/n.sh'
 alias v='cd ~/yobivault && vim'
 alias pics='~/scripts/pics'
-alias wk='function _wiki(){ w3m -dump "https://en.wikipedia.org/wiki/${*// /_}" | nvim; }; _wiki'
 alias nb='newsboat'
 alias d='w3m duckduckgo.com'
-alias p='nvim ~/yobivault/papers.md'
+alias p='vim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 bindkey -s '^E' 'vim $(fzf)\n'
 bindkey -s '^F' '~/scripts/fzfclip.sh\n'
@@ -58,4 +56,4 @@ alias tr="python -m http.server 8000"
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
 alias y="~/dev/y/zig-out/bin/y"
 alias zig="~/src/zig-x86_64-linux-0.16.0-dev.27+83f773fc6/zig"
-alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && nvim <(w3m -dump -o display_url_number=1 "$url")'
+alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && echo $url | xsel -i -b'
