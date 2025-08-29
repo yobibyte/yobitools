@@ -9,4 +9,5 @@ cargo install just
 
 curl -sSfL <https://astral.sh/install.sh> | sh
 
+cd dev && git clone https://github.com/vim/vim.git && cd vim/scr && make && sudo make install
 
