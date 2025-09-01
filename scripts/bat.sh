@@ -1,0 +1,1 @@
+/home/yobibyte/dev/yobitools/dotfiles/bat.sh
