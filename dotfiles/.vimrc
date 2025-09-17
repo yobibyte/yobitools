@@ -1,3 +1,2 @@
-set expandtab shiftwidth=4 softtabstop=-1 hidden
+set expandtab shiftwidth=4 softtabstop=-1 hidden autoread
 packadd comment | filetype plugin indent on
-highlight Normal ctermfg=172 ctermbg=235
