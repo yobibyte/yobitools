@@ -51,7 +51,7 @@ fi
 
 if [ $activeOutput != eDP-1 ]
 then
-    xrandr --output eDP-1 --mode 2880x1920
+    xrandr --output eDP-1 --mode 2880x1920 --rate 60.0
 fi
 
 echo -e "\n$(xrandr)"
