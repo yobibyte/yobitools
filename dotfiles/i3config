@@ -157,6 +157,7 @@ exec --no-startup-id feh  --bg-fill ~/pics/wallpapers/ox.jpg
 ###### workspace handling #####
 assign [class="Brave"] $ws2
 assign [class="librewolf"] $ws2
+assign [class="qutebrowser"] $ws2
 assign [class="mpv"] $ws8
 assign [class="Geeqie"] $ws3
 assign [class="Anki"] $ws5

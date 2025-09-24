@@ -13,3 +13,4 @@
 /home/yobibyte/.cargo/
 /home/yobibyte/.thunderbird/
 /home/yobibyte/.config/Slack/
+/home/yobibyte/.config/BraveSoftware/
