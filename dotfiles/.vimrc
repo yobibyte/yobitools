@@ -1,2 +1,1 @@
-set expandtab shiftwidth=4 softtabstop=-1 hidden autoread
-packadd comment | filetype plugin indent on
+set et sw=4 sts=-1 hid ar ai

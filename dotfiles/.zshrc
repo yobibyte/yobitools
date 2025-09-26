@@ -12,7 +12,6 @@ bindkey "\033[4~" end-of-line
 
 PS1='%F{#d78700}%~ %#%f '
 
-alias open='xdg-open'
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/.local/bin:$PATH
 
 kitty + complete setup zsh | source /dev/stdin
@@ -21,19 +20,18 @@ source ~/dev/z/z.sh
 source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
 export EDITOR="vim"
+export YDB_DIR=~/.ydb
+
+alias open='xdg-open'
 alias rtd="~/dev/rtd/target/debug/rtd"
 alias xx="xsel -b -i"
 alias def="source ~/.venv/bin/activate"
 alias t='yt-dlp -P ~/videos/inbox'
-
 archive() { mv $1 ~/archive/2025 }
-
-export YDB_DIR=~/.ydb
 alias m='cd $HOME/Downloads;neomutt'
 alias l='vim ~/sync/links.md'
 alias b='w3m $(xsel -b -o)'
 alias n='~/scripts/n.sh'
-alias v='cd ~/yobivault && vim'
 alias d='w3m duckduckgo.com'
 alias p='vim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
