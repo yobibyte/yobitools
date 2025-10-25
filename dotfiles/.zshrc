@@ -14,8 +14,6 @@ PS1='%F{#d78700}%~ %#%f '
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/.local/bin:$PATH
 
-kitty + complete setup zsh | source /dev/stdin
-
 source ~/dev/z/z.sh
 source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
@@ -42,4 +40,4 @@ alias tr="python -m http.server 8000"
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
 alias y="~/dev/y/zig-out/bin/y"
 alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && echo $url | content=$(w3m -dump -o display_link_number=1 $url) && echo -e "$url \n\n $content" | vim -'
-alias fd="rg --files"
+alias fd="rg --files | grep "
