@@ -14,3 +14,6 @@
 /home/yobibyte/.thunderbird/
 /home/yobibyte/.config/Slack/
 /home/yobibyte/.config/BraveSoftware/
+/home/yobibyte/.librewolf
+/home/yobibyte/.local/share/TelegramDesktop
+/home/yobibyte/.local/share/Trash
