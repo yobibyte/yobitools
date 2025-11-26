@@ -1,0 +1,40 @@
+--- config.def.h	2025-08-23 09:22:32.560272280 +0100
++++ config.h	2025-10-25 13:52:39.517621714 +0100
+@@ -5,7 +5,7 @@
+  *
+  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+  */
+-static char *font = "Liberation Mono:pixelsize=15:antialias=true:autohint=true";
++static char *font = "Liberation Mono:pixelsize=34:antialias=true:autohint=true";
+ static int borderpx = 2;
+ 
+ /*
+@@ -45,7 +45,7 @@
+ 
+ /* allow certain non-interactive (insecure) window operations such as:
+    setting the clipboard text */
+-int allowwindowops = 0;
++int allowwindowops = 1;
+ 
+ /*
+  * draw latency range in ms - from new content/keypress/etc until drawing.
+@@ -122,6 +122,8 @@
+ 	"#555555",
+ 	"gray90", /* default foreground colour */
+ 	"black", /* default background colour */
++        "#d78700",
++        "#282828",
+ };
+ 
+ 
+@@ -129,8 +131,8 @@
+  * Default colors (colorname index)
+  * foreground, background, cursor, reverse cursor
+  */
+-unsigned int defaultfg = 258;
+-unsigned int defaultbg = 259;
++unsigned int defaultfg = 260;
++unsigned int defaultbg = 261;
+ unsigned int defaultcs = 256;
+ static unsigned int defaultrcs = 257;
+ 

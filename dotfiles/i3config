@@ -41,8 +41,7 @@ set $ws4 "4"
 assign [class="mpv"] $ws1
 assign [class="Zathura"] $ws1
 assign [class="Brave"] $ws2
-assign [class="librewolf"] $ws2
-assign [class="qutebrowser"] $ws2
+assign [class="brave"] $ws2
 assign [class="Geeqie"] $ws3
 assign [class="Anki"] $ws4
 assign [class="Telegram"] $ws4
@@ -100,7 +99,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl -d "intel_backlight" set 5-%
 floating_minimum_size 600 x 600
 floating_maximum_size 1200 x 800
 
-bindsym $mod+b exec librewolf
+bindsym $mod+b exec brave
 
 ## Make the currently focused window a scratchpad
 bindsym $mod+Shift+minus move scratchpad

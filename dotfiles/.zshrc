@@ -12,9 +12,8 @@ bindkey "\033[4~" end-of-line
 
 PS1='%F{#d78700}%~ %#%f '
 
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/yobibyte/.cargo/bin:$HOME/dev/llama.cpp/build/bin:$HOME/scripts:$HOME/.local/bin:$PATH
+export PATH=/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/yobibyte/.cargo/bin:$HOME/scripts:$HOME/.local/bin:$PATH
 
-source ~/dev/z/z.sh
 source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 
 export EDITOR="vim"
@@ -30,7 +29,6 @@ alias m='cd $HOME/Downloads;neomutt'
 alias l='vim ~/sync/links.md'
 alias b='w3m $(xsel -b -o)'
 alias n='~/scripts/n.sh'
-alias d='w3m duckduckgo.com'
 alias p='vim ~/yobivault/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 bindkey -s '^E' 'vim $(fzf)\n'
