@@ -1,0 +1,20 @@
+#!/bin/bash
+# Download the reading list to txt and html.
+
+FILE=~/sync/links.md
+
+# get the line of the first match of # current
+start=$(grep -n "^# current" $FILE | head -1 | cut -d: -f 1)
+
+tail -n +$((start+1)) $FILE | grep http | while read -r line; do
+    echo Processing $line ...
+    cur_dir=~/Downloads/$(echo "$line" | sed 's#https\?://##g' | tr -c 'A-Za-z0-9_\n' '_')
+    echo $cur_dir
+    if [[ ! -d $cur_dir ]]; then
+        mkdir $cur_dir
+        echo -e "$url \n\n" > $cur_dir/page.txt 
+        w3m -dump -o display_link_number=1 "$line" >> $cur_dir/page.txt
+        monolith $line -o $cur_dir/page.html
+    fi
+done
+

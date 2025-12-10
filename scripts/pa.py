@@ -6,7 +6,7 @@ import os
 import re
 
 LIBDIR = "/home/yobibyte/papers"
-NOTES = "/home/yobibyte/yobivault/papers.md"
+NOTES = "/home/yobibyte/notes/papers.md"
 DUMMY_FILE = "/home/yobibyte/Downloads/f.pdf"
 
 timestamp = datetime.strftime(datetime.now(),"%Y_%m_%d_%H_%M_%S")

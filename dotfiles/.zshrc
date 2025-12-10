@@ -29,7 +29,7 @@ alias m='cd $HOME/Downloads;neomutt'
 alias l='vim ~/sync/links.md'
 alias b='w3m $(xsel -b -o)'
 alias n='~/scripts/n.sh'
-alias p='vim ~/yobivault/papers.md'
+alias p='vim ~/notes/papers.md'
 alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
 bindkey -s '^E' 'vim $(fzf)\n'
 bindkey -s '^F' '~/scripts/fzfclip.sh\n'
@@ -38,4 +38,4 @@ alias tr="python -m http.server 8000"
 alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
 alias y="~/dev/y/zig-out/bin/y"
 alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && echo $url | content=$(w3m -dump -o display_link_number=1 $url) && echo -e "$url \n\n $content" | vim -'
-alias fd="rg --files | grep "
+alias fd="rg --files | grep -i "

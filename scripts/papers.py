@@ -2,7 +2,7 @@
 import os
 
 LIB_PATH="/home/yobibyte/papers"
-NOTES_PATH="/home/yobibyte/yobivault/papers.md"
+NOTES_PATH="/home/yobibyte/notes/papers.md"
 
 def get_paper_paths_from_notes(notes_path):
     papers = []
