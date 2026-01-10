@@ -6,9 +6,6 @@ setopt SHARE_HISTORY
 autoload -Uz compinit
 compinit
 bindkey -v
-bindkey '^[[3~' delete-char
-bindkey "\033[1~" beginning-of-line
-bindkey "\033[4~" end-of-line
 
 PS1='%F{#d78700}%~ %#%f '
 
@@ -19,8 +16,6 @@ source /usr/share/fzf/completion.zsh && source /usr/share/fzf/key-bindings.zsh
 export EDITOR="vim"
 export YDB_DIR=~/.ydb
 
-alias open='xdg-open'
-alias rtd="~/dev/rtd/target/debug/rtd"
 alias xx="xsel -b -i"
 alias def="source ~/.venv/bin/activate"
 alias t='yt-dlp -P ~/videos/inbox'
@@ -30,12 +25,12 @@ alias l='vim ~/sync/links.md'
 alias b='w3m $(xsel -b -o)'
 alias n='~/scripts/n.sh'
 alias p='vim ~/notes/papers.md'
-alias nvda="curl -s https://terminal-stocks.dev/nvda | grep NVIDIA | cut --delimiter ' ' --fields 5"
+alias nvda='curl -s "https://www.google.com/finance/quote/NVDA:NASDAQ" | grep -oP "data-last-price=\"\K[0-9.]+"'
 bindkey -s '^E' 'vim $(fzf)\n'
 bindkey -s '^F' '~/scripts/fzfclip.sh\n'
 # esc-M in w3m to add a link here
 alias tr="python -m http.server 8000"
-alias wtr="curl -Ss wttr.in/SW130AL | head -n -1"
+alias wtr="curl -Ss wttr.in/SW130AL | head -n -1 | head -7"
 alias y="~/dev/y/zig-out/bin/y"
 alias li='url=$(fzf < ~/sync/links.md) && [ -n "$url" ] && echo $url | content=$(w3m -dump -o display_link_number=1 $url) && echo -e "$url \n\n $content" | vim -'
 alias fd="rg --files | grep -i "
