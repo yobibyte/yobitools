@@ -21,4 +21,8 @@ bind -x '"\C-e":vim "$(fzf)"'
 bind -x '"\C-f":~/scripts/fzfclip.sh'
 alias wtr="curl -Ss wttr.in/London | head -n -1 | head -7"
 alias y="~/dev/y/zig-out/bin/y"
-alias fd="rg --files | grep -i "
+
+_yg() {
+    find "${2:-.}" -type d \( -name ".git" -o -name ".venv" \) -prune -o -type f -print0 | xargs -0 -P 16 grep --color=always -I -Hn "$1"
+}
+alias yg='_yg'

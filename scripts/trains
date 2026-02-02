@@ -1,0 +1,2 @@
+curl -s https://raildar.co.uk/tt/BNI?tm=00-24 | awk '/<tr>/{i=0}/<td>/{i++;gsub(/.*<td>|<\/td>.*/,"");if(i==2)t=$0;if(i==4 && /Waterloo/)print t" → "$0}' | sed 's/&frac12;//g'
+

@@ -38,12 +38,11 @@ set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
 set $ws4 "4"
-assign [class="mpv"] $ws1
 assign [class="Zathura"] $ws1
 assign [class="Brave"] $ws2
 assign [class="brave"] $ws2
 assign [class="Geeqie"] $ws3
-assign [class="Anki"] $ws4
+assign [class="mpv"] $ws4
 assign [class="Telegram"] $ws4
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
