@@ -1,0 +1,1 @@
+~/scripts/n.sh $(tail -n1 ~/sync/links.md)

@@ -9,6 +9,7 @@
 /lost+found
 /var/cache/
 /var/log/
+/var/
 /home/yobibyte/.mozilla/
 /home/yobibyte/.cargo/
 /home/yobibyte/.thunderbird/

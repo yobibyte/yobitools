@@ -50,8 +50,12 @@ else
 fi
 
 if [ $activeOutput != eDP-1 ]
+#    xrandr --output DP-2 --mode 3440x1440 --rate 60.0
 then
     xrandr --output eDP-1 --mode 2880x1920 --rate 60.0
+    ln -fs /usr/bin/st40 ~/.local/bin/st
+else
+    ln -fs /usr/bin/st30 ~/.local/bin/st
 fi
 
 echo -e "\n$(xrandr)"

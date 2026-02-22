@@ -86,7 +86,8 @@ bindsym $mod+r mode "resize"
 #exec --no-startup-id bar mode invisible
 
 bindsym $mod+Shift+p exec ~/scripts/lock.sh 
-bindsym Control+Shift+P exec gnome-screenshot -i
+bindsym Control+Shift+P exec "scrot -s ~/screenshots/%Y-%m-%d_%H-%M-%S.png"
+
 bindsym XF86AudioRaiseVolume exec "amixer -q set Master 8%+"
 bindsym XF86AudioLowerVolume exec "amixer -q set Master 8%-"
 bindsym XF86AudioMute exec "amixer set Master toggle"
@@ -98,14 +99,13 @@ bindsym XF86MonBrightnessDown exec brightnessctl -d "intel_backlight" set 5-%
 floating_minimum_size 600 x 600
 floating_maximum_size 1200 x 800
 
-bindsym $mod+b exec brave
-
 ## Make the currently focused window a scratchpad
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 exec --no-startup-id udiskie -ans &
 
+bindsym $mod+b exec brave --disable-features=OutdatedBuildDetector
 bindsym $mod+Shift+s exec mpv https://somafm.com/gsclassic130.pls
 bindsym $mod+Shift+a exec pa
 bindsym $mod+Shift+d exec pd 

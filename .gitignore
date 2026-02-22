@@ -3,3 +3,8 @@
 .pyc
 __pycache__
 ywg/target
+gemma
+feed.txt
+*.swo
+*.swp
+downloaded.txt
