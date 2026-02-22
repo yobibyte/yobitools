@@ -1,11 +1,11 @@
---- config.def.h	2025-08-23 09:22:32.560272280 +0100
-+++ config.h	2025-10-25 13:52:39.517621714 +0100
+--- tmp/st-0.9.3/config.def.h	2025-08-09 14:00:58.350298234 +0100
++++ config.h	2026-02-08 11:59:56.629399746 +0000
 @@ -5,7 +5,7 @@
   *
   * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
   */
--static char *font = "Liberation Mono:pixelsize=15:antialias=true:autohint=true";
-+static char *font = "Liberation Mono:pixelsize=34:antialias=true:autohint=true";
+-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
++static char *font = "Liberation Mono:pixelsize=30:antialias=true:autohint=true";
  static int borderpx = 2;
  
  /*
@@ -18,16 +18,32 @@
  
  /*
   * draw latency range in ms - from new content/keypress/etc until drawing.
-@@ -122,6 +122,8 @@
+@@ -98,11 +98,11 @@
+ 	/* 8 normal colors */
+ 	"black",
+ 	"red3",
+-	"green3",
++	"green4",
+ 	"yellow3",
+-	"blue2",
++	"#4fc1ff",
+ 	"magenta3",
+-	"cyan3",
++	"#4fc1ff",
+ 	"gray90",
+ 
+ 	/* 8 bright colors */
+@@ -122,6 +122,9 @@
  	"#555555",
  	"gray90", /* default foreground colour */
  	"black", /* default background colour */
 +        "#d78700",
 +        "#282828",
++        "#c8c093", // 262
  };
  
  
-@@ -129,8 +131,8 @@
+@@ -129,11 +132,17 @@
   * Default colors (colorname index)
   * foreground, background, cursor, reverse cursor
   */
@@ -38,3 +54,23 @@
  unsigned int defaultcs = 256;
  static unsigned int defaultrcs = 257;
  
++// light theme
++//unsigned int defaultfg = 0;
++//unsigned int defaultbg = 262;
++//unsigned int defaultcs = 8;
++//static unsigned int defaultrcs = 9;
++
+ /*
+  * Default shape of cursor
+  * 2: Block ("█")
+@@ -193,8 +202,8 @@
+ 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
+ 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
+ 	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
+-	{ TERMMOD,              XK_Prior,       zoom,           {.f = +1} },
+-	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
++	{ TERMMOD,              XK_I,           zoom,           {.f = +1} },
++	{ TERMMOD,              XK_O,           zoom,           {.f = -1} },
+ 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
+ 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
+ 	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
