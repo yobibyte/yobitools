@@ -42,7 +42,7 @@ assign [class="Zathura"] $ws1
 assign [class="Brave"] $ws2
 assign [class="brave"] $ws2
 assign [class="Geeqie"] $ws3
-assign [class="mpv"] $ws4
+assign [class="mpv"] $ws3
 assign [class="Telegram"] $ws4
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2

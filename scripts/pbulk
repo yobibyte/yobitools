@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cat ~/.arxiv | xargs -I {} python ~/scripts/pa.py  "{}"
