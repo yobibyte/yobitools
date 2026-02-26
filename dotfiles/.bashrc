@@ -19,7 +19,6 @@ alias y="~/dev/y/zig-out/bin/y"
 yg() {
     find "${2:-.}" -type d \( -name ".git" -o -name ".venv" \) -prune -o -type f -print0 | xargs -0 -P 16 grep --color=always -I -Hn "$1"
 }
-
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 yf() {
@@ -33,4 +32,9 @@ yf() {
     fi
 }
 bind '"\C-f":"yf\n"'
+gg() {
+    curl -s -G 'https://gdir.telae.net/gdir/' --data-urlencode "country=gb" \
+      --data-urlencode "origin=$1" --data-urlencode "destination=$2" \
+      --data-urlencode "mode_of_travel=transit" | w3m -dump -T text/html | head -n -8
+}
 
